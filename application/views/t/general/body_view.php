@@ -5,9 +5,13 @@
 		<div class="container">
 			<a href="<?php echo base_url(); ?>" class="brand logo">Twobecome.us</a>
 			<div class="nav-collapse">
+				
 				<ul class="nav">
-					<li><p class="navbar-text"><i>Customer Service: (+62) 85273255261 (08:00 - 22:00 WIB)</i></p></li>
+					<li><p class="navbar-text"><i>Customer Service: cs@twobecome.us</i></p></li>
 				</ul>
+				
+				
+				
 				<ul class="nav pull-right">
 					<?php 
 					$member = $this->session->userdata('2becomeus_login');
@@ -41,10 +45,29 @@
 					
 					<?php }?>
 					<li class="divider-vertical"></li>
-					<li><a href="#">About</a></li>
+					
+					<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><b>Support</b><b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							<li><a href="#">About</a></li>
+							<li class="divider"></li>
+							<li><a href="#">FAQ</a></li>
+							<li class="divider"></li>
+							<li><a href="#">Customer Service</a></li>
+						</ul>
+					</li>
+					
 					<li class="divider-vertical"></li>
-					<li><a href="#">FAQ</a></li>
+					<?php if (!empty($member)){  ?>
+					<li>
+						<form class="navbar-search pull-left" action="">
+							<input type="text" class="search-query span2" placeholder="Search">
+						</form>
+					</li>
+					<?php } ?>
 				</ul>
+				
+				
+				
 			</div>
 		</div>
 	</div>
