@@ -33,15 +33,44 @@ $this->load->view('t/general/body_view');
 								<h2>Pay IDR 350.000</h2>
 								<p>Kami akan menampilkan siapa saja yang matching dengan anda dan dapat mengajak nya berkencan dengan patner restaourant kami.</p>
 								
+								<?php
+								$uniqcode = $this->utils->create_code(2, 'number');
+								$payment = 350000;
+								$total_payment = $payment + $uniqcode;
+								$order_hash = $this->utils->create_code(6, 'number');
+								
+								if (empty($check_order)){
+								
+								?>
+								
+								<form method="post" action="<?php echo base_url() . "checkout/process_checkout"; ?>">
+									<input type="hidden" name="uniqcode" value="<?php echo $uniqcode; ?>" />
+									<input type="hidden" name="payment" value="<?php echo $payment; ?>" />
+									<input type="hidden" name="total_payment" value="<?php echo $total_payment; ?>" />
+									<input type="hidden" name="order_hash" value="<?php echo $order_hash; ?>" />
+									<button type="submit" class="btn btn-success" value="1" name="btn_submit">Continue Checkout !</button>
+								</form>
+								
+								<?php 
+								
+								}else if ($check_order->payment_status == 'checkout'){
+								
+								
+								?>
+								
 								<h4>Transfer Pembayaran</h4>
 								<table class="table table-condensed">
 									<tr>
 										<th>Uniqcode</th>
-										<td>IDR 99</td>
+										<td><b>IDR <?php echo $check_order->uniqcode; ?></b>. <small>Harap dimasukkan uniqcode ke dalam total pembayaran anda.</small></td>
+									</tr>
+									<tr>
+										<th>Order Hash</th>
+										<td><b># <?php echo $check_order->order_hash; ?></b>. <small>Harap dimasukkan orderhash ke dalam note/catatan confirmasi pembayaran anda.</small></td>
 									</tr>
 									<tr>
 										<th>Total</th>
-										<td>IDR 350.099</td>
+										<td><b>IDR <?php echo number_format($check_order->total_customer_price, 2); ?></b></td>
 									</tr>
 									<tr>
 										<th>Nama</th>
@@ -61,9 +90,27 @@ $this->load->view('t/general/body_view');
 									</tr>
 									<tr>
 										<th>Link Confirm</th>
-										<td><a href="#">Confirm Payment ?</a></td>
+										<td><a href="<?php echo base_url(); ?>checkout/confirm_payment?orderhash=<?php echo $check_order->order_hash; ?>" target="_blank" class="btn btn-warning">Confirm Payment ?</a></td>
 									</tr>
 								</table>
+								
+								<?php
+								
+								}else if ($check_order->payment_status == 'paid'){
+									
+								?>
+
+								<div class="alert alert-info">
+									<b>Well!</b>, Team kami sedang dalam proses pemeriksaan data-data yang anda kirimkan, kami akan memprosesnya 1x24 jam atau bisa lebih cepat. Kami akan menginformasikan kepada anda melalui alamat email anda <b><?php echo $this->business->member_email; ?></b>
+								</div>
+								
+								<?php
+									
+								}
+								
+								/***
+								
+								***/ ?>
 								
 							</div>
 						</div>

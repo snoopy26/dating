@@ -18,7 +18,8 @@ class Explore extends MY_Controller {
 	
 	function index(){
 		$this->load->model('personality_test_model');
-		
+		$this->load->model('checkout_model');
+		$this->load->library('utils');
 		
 		// =========================================
 		// PROSES 1
@@ -40,6 +41,8 @@ class Explore extends MY_Controller {
 		$this->data['user_personality'] = $user_personality;
 		// =========================================
 		
+		$check_order = $this->checkout_model->check_order($this->business->member_id);
+		$this->data['check_order'] = $check_order;
 		
 		$this->default_param('', array('js/custom/explore.js'));
 		$this->load->view('t/explore/explore_view', $this->data);
