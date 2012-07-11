@@ -29,7 +29,24 @@ class Explore extends MY_Controller {
 		
 		// =========================================
 		// PROSES 2
+		$matching = $this->proses2_matching($lookingfor);
+		$this->data['matching'] = $matching;
+		// =========================================
 		
+	
+		// =========================================
+		// PROSES 3
+		$user_personality = $this->proses3_matching($lookingfor, $matching);
+		$this->data['user_personality'] = $user_personality;
+		// =========================================
+		
+		
+		$this->default_param('', array('js/custom/explore.js'));
+		$this->load->view('t/explore/explore_view', $this->data);
+	}
+	
+	function proses2_matching($lookingfor){
+		$this->load->model('personality_test_model');
 		// body_type
 		$body_type = explode("/:/", $lookingfor->body_type);
 		if (count($body_type) == 0){
@@ -79,14 +96,12 @@ class Explore extends MY_Controller {
 			'religion' => $religion_string
 		));
 		//echo $this->db->last_query();
-		$this->data['matching'] = $matching;
 		
-		// =========================================
-		
-		
-		
-		// =========================================
-		// PROSES 3
+		return $matching;
+	}
+	
+	function proses3_matching($lookingfor, $matching){
+		$this->load->model('personality_test_model');
 		
 		$total_score = 50;
 		
@@ -178,11 +193,7 @@ class Explore extends MY_Controller {
 			
 		}
 		$user_personality = $this->sorting($user_personality, 'total_score');
-		$this->data['user_personality'] = $user_personality;
-		// =========================================
-		
-		$this->default_param('', array('js/custom/explore.js'));
-		$this->load->view('t/explore/explore_view', $this->data);
+		return $user_personality;
 	}
 	
 	function sorting(&$array, $key) {

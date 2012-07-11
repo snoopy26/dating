@@ -1022,3 +1022,51 @@ p.tagline b{
 .step-body h4{
 	margin-bottom:10px;
 }
+
+
+
+
+.image_wrapper{
+	position:fixed;
+	width:100%;
+	height:100%;
+	top:0;
+	left:0;
+	background:rgba(0, 0, 0, .9);
+	z-index:9999;
+}
+.image_nav a{
+	position:absolute;
+	top:0;
+	left:0;
+	background:url(../img/nav.png) no-repeat -20% 50%;
+	width:28px;
+	height:100%;
+	text-indent:-999px;
+	cursor:pointer;
+	opacity:0.3;
+	outline:none;
+	z-index:99991;
+}
+.image_nav a.image_nav_next{
+	right:0px;
+	left:auto;
+	background-position:115% 50%;
+	-moz-border-radius: 0px 10px 10px 0px;
+	-webkit-border-radius: 0px 10px 10px 0px;
+	border-radius: 0px 10px 10px 0px;
+}
+.image_nav a:hover{
+	opacity:0.8;
+}
+.image_container{
+	position:relative;
+	text-align:center;
+	line-height:0;
+	top:50%;
+	margin-top:-250px;
+}
+.image_container img{
+	max-width:100%;
+	max-height:100%;
+}

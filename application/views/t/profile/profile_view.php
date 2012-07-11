@@ -87,20 +87,20 @@ $this->load->view('t/general/body_view');
 				</div>
 			</div>
 			
-			<ul class="thumbnails list-photos">
+			<ul class="thumbnails list-photos" id="gallery_photo">
 				<li class="span2">
-					<a href="#" class="thumbnail">
-						<img src="<?php echo $this->filemanager->getPath($member->album2, "160x120"); ?>" alt="">
+					<a href="#" class="thumbnail" >
+						<img src="<?php echo $this->filemanager->getPath($member->album2, "160x120"); ?>" alt="" data-bigimg="<?php echo $this->filemanager->getPath($member->album2, "1000x500"); ?>">
 					</a>
 				</li>
 				<li class="span2">
-					<a href="#" class="thumbnail">
-						<img src="<?php echo $this->filemanager->getPath($member->album3, "160x120"); ?>" alt="">
+					<a href="#" class="thumbnail" >
+						<img src="<?php echo $this->filemanager->getPath($member->album3, "160x120"); ?>" alt="" data-bigimg="<?php echo $this->filemanager->getPath($member->album3, "1000x500"); ?>">
 					</a>
 				</li>
 				<li class="span2">
-					<a href="#" class="thumbnail">
-						<img src="<?php echo $this->filemanager->getPath($member->album4, "160x120"); ?>" alt="">
+					<a href="#" class="thumbnail" >
+						<img src="<?php echo $this->filemanager->getPath($member->album4, "160x120"); ?>" alt="" data-bigimg="<?php echo $this->filemanager->getPath($member->album4, "1000x500"); ?>">
 					</a>
 				</li>
 			</ul>
@@ -112,7 +112,7 @@ $this->load->view('t/general/body_view');
 	<div class="row row-profile-cover">
 		<div class="span8">
 			<div class="figure">
-				
+			
 				<ul class="nav nav-tabs" id="tabMenu">
 					<li class="active"><a href="#lookingfor" data-toggle="tab">Looking for</a></li>
 					<li><a href="#about" data-toggle="tab">About</a></li>
@@ -467,6 +467,16 @@ $this->load->view('t/general/body_view');
 		<p><?php echo nl2br($member->about1); ?></p>
 	</div>
 </div>
+
+
+<div class="image_wrapper" id="image_wrapper" style="display:none;">
+	<div class="image_nav">
+		<a href="#" class="image_nav_prev">Prev</a>
+		<a href="#" class="image_nav_next">Next</a>
+	</div>
+	<div class="image_container"></div>
+</div>
+
 
 <?php
 $this->load->view('t/general/footer_body_view');

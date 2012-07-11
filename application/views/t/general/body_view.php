@@ -37,6 +37,7 @@
 							<li><a href="<?php echo base_url() . 'profile/index/' . $member->member_username; ?>">View my profile page</a></li>
 							<li class="divider"></li>
 							<li><a href="#">Messages</a></li>
+							<li><a href="#">History</a></li>
 							<li class="divider"></li>
 							<li><a href="#">Settings</a></li>
 							<li><a href="<?php echo base_url() . "auth/signout" ?>">Sign Out</a></li>
