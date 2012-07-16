@@ -19,7 +19,8 @@ class Filemanager {
 		array('size' => '600x500', 'type' => 'adaptiveResize'),
 		array('size' => '160x120', 'type' => 'adaptiveResize'),
 		array('size' => '300x200', 'type' => 'adaptiveResize'),
-		array('size' => '1000x500', 'type' => 'resize')
+		array('size' => '1000x500', 'type' => 'resize'),
+		array('size' => '300x300', 'type' => 'resize')
 	);
 
 	

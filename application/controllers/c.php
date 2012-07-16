@@ -71,7 +71,7 @@ class C extends MY_Controller{
 				// looking for
 				$this->lookingfor();
 				
-				$this->default_param();
+				$this->default_param('', array('js/custom/step_lookingfor.js'));
 				$this->load->view('t/auth/step6_view', $this->data);
 			}else if ($member->step == 4){
 				$this->data['current_menu'] = 'questions';
@@ -471,8 +471,8 @@ class C extends MY_Controller{
 				
 				$errors = array();
 				
-				$height = $this->input->get_post('height');
-				$body_type = $this->input->get_post('body_type');
+				//$height = $this->input->get_post('height');
+				//$body_type = $this->input->get_post('body_type');
 				//$smokes = $this->input->get_post('smokes');
 				//$drinks = $this->input->get_post('drinks');
 				//$drugs = $this->input->get_post('drugs');
@@ -481,12 +481,21 @@ class C extends MY_Controller{
 				$job = $this->input->get_post('job');
 				//$income = $this->input->get_post('income');
 				
+				$i_want = $this->input->get_post('i_want');
+				$age_start = $this->input->get_post('age_start');
+				$age_end = $this->input->get_post('age_end');
+				$location = $this->input->get_post('location');
+				$must_be_single = $this->input->get_post('must_be_single');
+				
+				/*
 				if (empty($height)){
 					$errors['height_error'] = "Anda seharusnya mengisi bagian ini.";
 				}
 				if (empty($body_type)){
 					$errors['body_type_error'] = "Anda seharusnya mengisi bagian ini.";
 				}
+				*/
+				
 				/*
 				if (empty($smokes)){
 					$errors['smokes_error'] = "Anda seharusnya mengisi bagian ini.";
@@ -514,6 +523,22 @@ class C extends MY_Controller{
 				}
 				
 				
+				if (empty($i_want)){
+					$errors['i_want_error'] = "Anda seharusnya mengisi bagian ini.";
+				}
+				if (empty($age_start)){
+					$errors['age_error'] = "Anda seharusnya mengisi bagian ini.";
+				}
+				if (empty($age_end)){
+					$errors['age_error'] = "Anda seharusnya mengisi bagian ini.";
+				}
+				if ($age_start >= $age_end  || $age_start < 18 || $age_end > 60){
+					$errors['age_error'] = "Anda kesalahan dalam penulisan umur.";
+				}
+				if (empty($location)){
+					$errors['location_error'] = "Anda seharusnya mengisi bagian ini.";
+				}
+				
 				
 				// personality
 				$this->load->model('personality_test_model');
@@ -521,8 +546,8 @@ class C extends MY_Controller{
 				if (!empty($errors)){
 					$this->session->set_userdata('errors_lookingfor', $errors);
 					
-					$this->session->set_userdata('height', $height);
-					$this->session->set_userdata('body_type', $body_type);
+					//$this->session->set_userdata('height', $height);
+					//$this->session->set_userdata('body_type', $body_type);
 					//$this->session->set_userdata('smokes', $smokes);
 					//$this->session->set_userdata('drinks', $drinks);
 					//$this->session->set_userdata('drugs', $drugs);
@@ -530,15 +555,20 @@ class C extends MY_Controller{
 					$this->session->set_userdata('education', $education);
 					$this->session->set_userdata('job', $job);
 					//$this->session->set_userdata('income', $income);
+					
+					$this->session->set_userdata('i_want', $i_want);
+					$this->session->set_userdata('age_start', $age_start);
+					$this->session->set_userdata('age_end', $age_end);
+					$this->session->set_userdata('location', $location);
+					$this->session->set_userdata('must_be_single', $must_be_single);
+					
 				}else{
-					
-					
 					
 					// insert to db
 					// 1. insert yang height, bodytype, education, job, religion
 					$types = array(
-						'height' => $height, 
-						'body_type' => $body_type, 
+						//'height' => $height, 
+						//'body_type' => $body_type, 
 						'education' => $education, 
 						'job' => $job,
 						'religion' => $religion
@@ -548,14 +578,14 @@ class C extends MY_Controller{
 					}
 					
 					// 2. insert yang lain
-					/*
-					$this->personality_test_model->insertLookingForOther(array(
-						'smokes' => $smokes,
-						'drinks' => $drinks,
-						'drugs' => $drugs,
-						'income' => $income,
+					$this->personality_test_model->insertLookingFor(array(
+						'i_want' => $i_want,
+						'ages_start' => $age_start,
+						'ages_end' => $age_end,
+						'location' => $location,
+						'must_be_single' => $must_be_single,
 					), $member->member_id);
-					*/
+					
 					
 					
 					// 3. insert personality

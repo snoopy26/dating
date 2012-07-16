@@ -48,7 +48,7 @@ class Checkout_model extends CI_Model {
 		INNER JOIN order__cart_detail b ON 
 		a.order_id = b.order_id
 		WHERE 1
-		AND a.payment_status IN ('checkout', 'paid')
+		AND a.payment_status IN ('checkout', 'paid', 'confirmed')
 		AND b.order_detail_status = 'active'
 		AND a.account_id = ?
 		LIMIT 1
@@ -80,7 +80,7 @@ class Checkout_model extends CI_Model {
 	$orderhash,
 	$order_id,
 	$order_detail_id,
-	$datetime,
+	$datepayment,
 	$amount,
 	$frombank,
 	$bankaccount,
@@ -93,13 +93,14 @@ class Checkout_model extends CI_Model {
 			$order_detail_id,
 			$amount
 		);
-		$this->insertOrderPayment(
+		$this->insertOrderConfirmation(
 			$order_id,
 			$frombank,
 			$bankaccount,
 			$destbank,
 			$note,
-			$ktp
+			$ktp,
+			$datepayment
 		);
 	}
 	
@@ -113,24 +114,26 @@ class Checkout_model extends CI_Model {
 		$this->db->query($sql, array($amount, $order_detail_id));
 	}
 	
-	function insertOrderPayment(
+	function insertOrderConfirmation(
 	$order_id,
 	$frombank,
 	$bankaccount,
 	$destbank,
 	$note,
-	$ktp
+	$ktp,
+	$datepayment
 	){
 		$sql = "
-		INSERT INTO order__payment SET
+		INSERT INTO order__confirmation SET
 		order_id = ?,
 		from_bank = ?,
 		bank_account_name = ?,
 		destination_bank = ?,
 		note = ?,
-		ktp = ?
+		ktp = ?,
+		datepayment = ?
 		";
-		$this->db->query($sql, array($order_id, $frombank, $bankaccount, $destbank, $note, $ktp));
+		$this->db->query($sql, array($order_id, $frombank, $bankaccount, $destbank, $note, $ktp, $datepayment));
 	}
 	
 	function updateOrderCart($order_id, $payment_status){

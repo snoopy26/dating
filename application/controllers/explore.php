@@ -21,42 +21,39 @@ class Explore extends MY_Controller {
 		$this->load->model('checkout_model');
 		$this->load->library('utils');
 		
-		// =========================================
-		// PROSES 1
-		$lookingfor = $this->personality_test_model->getLookingFor($this->business->member_id);
-		$this->data['lookingfor'] = $lookingfor;
-		// =========================================
-		
-		
-		// =========================================
-		// PROSES 2
-		$matching = $this->proses2_matching($lookingfor);
-		$this->data['matching'] = $matching;
-		// =========================================
-		
-	
-		// =========================================
-		// PROSES 3
-		$user_personality = $this->proses3_matching($lookingfor, $matching);
-		$this->data['user_personality'] = $user_personality;
-		// =========================================
-		
 		$check_order = $this->checkout_model->check_order($this->business->member_id);
 		$this->data['check_order'] = $check_order;
 		
+		if (!empty($check_order) && $check_order->payment_status == "confirmed"){
+		
+			// =========================================
+			// PROSES 1
+			$lookingfor = $this->personality_test_model->getLookingFor($this->business->member_id);
+			$this->data['lookingfor'] = $lookingfor;
+			// =========================================
+			
+			
+			// =========================================
+			// PROSES 2
+			$matching = $this->proses2_matching($lookingfor);
+			$this->data['matching'] = $matching;
+			// =========================================
+			
+		
+			// =========================================
+			// PROSES 3
+			$user_personality = $this->proses3_matching($lookingfor, $matching);
+			$this->data['user_personality'] = $user_personality;
+			// =========================================
+		
+		}
+		
 		$this->default_param('', array('js/custom/explore.js'));
-		$this->load->view('t/explore/explore_view', $this->data);
+		$this->load->view('t/explore/tmp_explore_view', $this->data);
 	}
 	
 	function proses2_matching($lookingfor){
 		$this->load->model('personality_test_model');
-		// body_type
-		$body_type = explode("/:/", $lookingfor->body_type);
-		if (count($body_type) == 0){
-			$body_type_string = $body_type;
-		}else{
-			$body_type_string = "'" . implode("','", explode("/:/", $lookingfor->body_type)) . "'";
-		}
 		
 		// education
 		$education = explode("/:/", $lookingfor->education);
@@ -64,14 +61,6 @@ class Explore extends MY_Controller {
 			$education_string = $education;
 		}else{
 			$education_string = "'" . implode("','", explode("/:/", $lookingfor->education)) . "'";
-		}
-		
-		// height
-		$height = explode("/:/", $lookingfor->height);
-		if (count($height) == 0){
-			$height_string = $height;
-		}else{
-			$height_string = "'" . implode("','", explode("/:/", $lookingfor->height)) . "'";
 		}
 		
 		// job
@@ -90,15 +79,33 @@ class Explore extends MY_Controller {
 			$religion_string = "'" . implode("','", explode("/:/", $lookingfor->religion)) . "'";
 		}
 		
+		$location = "";
+		if ($lookingfor->location == 'Near me'){
+			$location = $this->business->city_name;
+		}
+		
+		$must_be_single = "";
+		if ($lookingfor->must_be_single == 1){
+			$must_be_single = "single";
+		}
+		
+		$i_want = "";
+		if ($lookingfor->i_want == "Straight"){
+			$i_want = "straight";
+		}
+		
 		$matching = $this->personality_test_model->getMatching(array(
 			'member_id' => $this->business->member_id,
-			'body_type' => $body_type_string,
 			'education' => $education_string,
-			'height' => $height_string,
 			'job' => $job_string,
-			'religion' => $religion_string
+			'religion' => $religion_string,
+			'i_want' => $i_want,
+			'ages_start' => $lookingfor->ages_start,
+			'ages_end' => $lookingfor->ages_end,
+			'location' => $location,
+			'must_be_single' => $must_be_single
 		));
-		//echo $this->db->last_query();
+		echo $this->db->last_query();
 		
 		return $matching;
 	}

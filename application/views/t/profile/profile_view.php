@@ -132,6 +132,9 @@ $this->load->view('t/general/body_view');
 										<th>Gender</th>
 										<td><?php echo ($member->member_gender == "male") ? "Female" : "Male"; ?></td>
 									</tr>
+									
+									<?php
+									/***
 									<tr>
 										<th>Height</th>
 										<td>
@@ -198,6 +201,45 @@ $this->load->view('t/general/body_view');
 										?>
 										</td>
 									</tr>
+									***/
+									?>
+									
+									<tr>
+										<th>I Want</th>
+										<td>
+										<?php
+										echo $lookingfor->i_want;
+										?>
+										</td>
+									</tr>
+									
+									<tr>
+										<th>Age between</th>
+										<td>
+										<?php
+										echo $lookingfor->age;
+										?>
+										</td>
+									</tr>
+									
+									<tr>
+										<th>Location</th>
+										<td>
+										<?php
+										echo $lookingfor->location;
+										?>
+										</td>
+									</tr>
+									
+									<tr>
+										<th>Must be single</th>
+										<td>
+										<?php
+										echo ($lookingfor->must_be_single == 1) ? "Yes" : "Tidak harus";
+										?>
+										</td>
+									</tr>
+									
 									<tr>
 										<th>Religion</th>
 										<td>
@@ -379,6 +421,24 @@ $this->load->view('t/general/body_view');
 										<th>Income</th>
 										<td><?php echo $member->income; ?></td>
 									</tr>
+									
+									<tr>
+										<th>City Name</th>
+										<td><?php echo $member->city_name; ?></td>
+									</tr>
+									<tr>
+										<th>Kecamatan Name</th>
+										<td><?php echo $member->kecamatan_name; ?></td>
+									</tr>
+									<tr>
+										<th>Kelurahan Name</th>
+										<td><?php echo $member->kelurahan_name; ?></td>
+									</tr>
+									<tr>
+										<th>Province Name</th>
+										<td><?php echo $member->province_name; ?></td>
+									</tr>
+									
 								</tbody>
 							</table>
 						</div>

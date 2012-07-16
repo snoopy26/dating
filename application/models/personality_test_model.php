@@ -211,19 +211,19 @@ class Personality_test_model extends CI_Model{
 	function getLookingFor($member_id){
 		$sql = "
 		SELECT 
-		GROUP_CONCAT(DISTINCT b.body_type SEPARATOR '/:/') AS body_type,
 		GROUP_CONCAT(DISTINCT c.education SEPARATOR '/:/') AS education,
-		GROUP_CONCAT(DISTINCT d.height SEPARATOR '/:/') AS height,
 		GROUP_CONCAT(DISTINCT e.job SEPARATOR '/:/') AS job,
 		GROUP_CONCAT(DISTINCT h.religion SEPARATOR '/:/') AS religion,
-		GROUP_CONCAT(DISTINCT CONCAT(g.type_name, '|', f.type_range) SEPARATOR '/:/') AS personality
+		GROUP_CONCAT(DISTINCT CONCAT(g.type_name, '|', f.type_range) SEPARATOR '/:/') AS personality,
+		i.i_want,
+		i.ages_start,
+		i.ages_end,
+		CONCAT(i.ages_start, ' - ', i.ages_end) AS age,
+		i.location,
+		i.must_be_single
 		FROM member__profile a
-		INNER JOIN member__lookingfor_body_type b ON
-		a.member_id = b.member_id
 		INNER JOIN member__lookingfor_education c ON
 		a.member_id = c.member_id
-		INNER JOIN member__lookingfor_height d ON
-		a.member_id = d.member_id
 		INNER JOIN member__lookingfor_job e ON
 		a.member_id = e.member_id
 		INNER JOIN member__lookingfor_personality f ON
@@ -232,6 +232,8 @@ class Personality_test_model extends CI_Model{
 		g.type_id = f.type_id
 		INNER JOIN member__lookingfor_religion h ON
 		a.member_id = h.member_id
+		INNER JOIN member__lookingfor i ON
+		a.member_id = i.member_id
 		WHERE 1
 		AND a.member_id = ?
 		GROUP BY a.member_id
@@ -241,25 +243,34 @@ class Personality_test_model extends CI_Model{
 	
 	function getMatching($param = array()){
 		$member_id = $param['member_id'];
-		$body_type = $param['body_type'];
 		$education = $param['education'];
-		$height = $param['height'];
 		$job = $param['job'];
 		$religion = $param['religion'];
+
+		$i_want = $param['i_want'];
+		$ages_start = $param['ages_start'];
+		$ages_end = $param['ages_end'];
+		$location = $param['location'];
+		$must_be_single = $param['must_be_single'];
 		
 		$where_member_id = 
-		$where_body_type = 
 		$where_education = 
-		$where_height = 
 		$where_job =
-		$where_religion = "";
+		$where_religion = 
+		$where_i_want =
+		$where_ages =
+		$where_location =
+		$where_must_be_single = 
+		"";
 		
 		if (!empty($member_id)) $where_member_id = "AND b.member_id <> $member_id";
-		//if (!empty($body_type)) $where_body_type = "AND b.body_type IN ($body_type)";
 		if (!empty($education)) $where_education = "AND b.education IN ($education)";
-		//if (!empty($height)) $where_height = "AND b.height IN ($height)";
 		if (!empty($job)) $where_job = "AND b.job IN ($job)";
 		if (!empty($religion)) $where_religion = "AND b.religion IN ($religion)";
+		if (!empty($i_want)) $where_i_want = "AND a.member_interest = '$i_want' ";
+		if (!empty($ages_start) && !empty($ages_end)) $where_ages = "AND (YEAR(CURDATE()) - YEAR(a.birthday)) BETWEEN $ages_start AND $ages_end ";
+		//if (!empty($location)) $where_location = "AND f.city_name = '$location' ";
+		if (!empty($must_be_single)) $where_must_be_single = "AND a.member_status = '$must_be_single' ";
 		
 		$sql = "
 		SELECT
@@ -303,13 +314,35 @@ class Personality_test_model extends CI_Model{
 		
 		WHERE 1
 		$where_member_id
-		$where_body_type
 		$where_education
-		$where_height
 		$where_job
 		$where_religion
+		$where_i_want
+		$where_ages 
+		$where_location
+		$where_must_be_single
 		";
 		return $results = $this->db->query($sql)->result();
+	}
+	
+	function insertLookingFor($param, $member_id){
+		$sql = "
+		INSERT INTO member__lookingfor SET
+		member_id = ?,
+		i_want = ?,
+		ages_start = ?,
+		ages_end = ?,
+		location = ?,
+		must_be_single = ?
+		";
+		$this->db->query($sql, array(
+			$member_id,
+			$param['i_want'],
+			$param['ages_start'],
+			$param['ages_end'],
+			$param['location'],
+			$param['must_be_single']
+		));
 	}
 	
 }

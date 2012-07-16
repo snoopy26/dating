@@ -16,11 +16,31 @@ $this->load->view('t/general/body_view');
 				
 			<ul class="nav nav-tabs" id="tabMenu">
 				<li class="active"><a href="#welcome" data-toggle="tab">Welcome</a></li>
+				<?php 
+				if (!empty($check_order) && $check_order->payment_status == "confirmed"){
+				?>
 				<li><a href="#rekomendasi" data-toggle="tab">Rekomendasi</a></li>
+				<?php
+				}
+				?>
 			</ul>	
 				
 			<div class="tab-content">
 				<div class="tab-pane active" id="welcome">	
+					
+					<?php 
+					// errors
+					$errors = $this->session->userdata('errors_checkout');
+					
+					// delete session
+					$this->session->unset_userdata('errors_checkout');
+					
+					if (!empty($errors)){ 
+					?>
+					<div class="alert alert-error" style="margin-top:10px;">
+						<strong>Warning!</strong> Kami telah menyimpan orderan anda, silahkan menlanjutkan proses pembayaran, bisa dilihat di <b>Step Pertama</b> pada bagian ini.
+					</div>
+					<?php } ?>
 					
 					<h1 class="mainline">New ways of dating</h1>
 					<p class="tagline"><b>Get started in 4 steps.</b> It will be easier than ever to find your love and mate.</p>
@@ -106,6 +126,16 @@ $this->load->view('t/general/body_view');
 								
 								<?php
 									
+								}else if ($check_order->payment_status == 'confirmed'){
+								
+								?>
+								
+								<div class="alert alert-success">
+									<b>Well!</b>, Pembayaran anda telah kami confirmed. Silahkan berpetualang didalam pencarian cinta.
+								</div>
+								
+								<?php
+								
 								}
 								
 								/***
@@ -127,7 +157,7 @@ $this->load->view('t/general/body_view');
 							<span class="number">3.</span>
 							<div class="step-body">
 								<h2>Dating Schedule</h2>
-								<p>Setelah menemukan pasangan yang tepat bagi anda, maka sudah saatnya menentukan jadwal dating yang tepat bagi anda berdua.</p>
+								<p>Setelah menemukan pasangan yang tepat bagi anda, maka sudah saatnya menentukan jadwal dating yang tepat bagi anda berdua dan menentukan restaurant mana yang akan di datangi.</p>
 							</div>
 						</div>
 						<div class="step">
@@ -141,6 +171,10 @@ $this->load->view('t/general/body_view');
 					</div>
 					
 				</div>
+				
+				<?php 
+				if ($check_order->payment_status == "confirmed"){
+				?>
 				<div class="tab-pane dating-people-recommend dating-profile" id="rekomendasi">
 					
 					<h2>Rekomendasi untuk anda.</h2>
@@ -174,6 +208,9 @@ $this->load->view('t/general/body_view');
 					<?php } ?>
 					
 				</div>
+				
+				<?php } ?>
+				
 			</div>
 			
 		</div>

@@ -48,6 +48,14 @@ class Checkout extends MY_Controller {
 				$total_payment,
 				$uniqcode
 			);
+			$this->session->set_userdata('errors_checkout', true);
+			
+			// kirim email
+			$this->load->library('send_email');
+			$name = $this->business->member_name;
+			$email = $this->business->member_email;
+			$this->send_email->sendProcessCheckout($name, $email, "Checkout Confirmation", $uniqcode, $order_hash, $total_payment);
+			$this->send_email->sendRememberProcessCheckout($name, $email, "Remember Payment Confirmation", $uniqcode, $order_hash, $total_payment);
 		}
 		redirect(base_url() . "explore");
 	}
@@ -137,7 +145,7 @@ class Checkout extends MY_Controller {
 				redirect(base_url() . "checkout/confirm_payment?orderhash=" . $orderHash);
 			}else{
 				$this->checkout_model->confirmCheckoutPayment(
-					$orderhash,
+					$orderHash,
 					$orderHashCheck->order_id,
 					$orderHashCheck->order_detail_id,
 					$datetime,
@@ -148,6 +156,14 @@ class Checkout extends MY_Controller {
 					$note,
 					$ktp
 				);
+				
+				// kirim email
+				$this->load->library('send_email');
+				$name = $this->business->member_name;
+				$email = $this->business->member_email;
+				//$fullname, $email, $title, $order_hash, $payment_date, $bank_asal, $bank_tujuan, $account_name, $amount, $note
+				$this->send_email->sendProcessConfirmPayment($name, $email, "Confirm Payment Confirmation", $orderHash, date('d M Y, H:i', strtotime($datetime)), $frombank, $destbank, $bankaccount, $amount, $note);
+				
 			}
 			
 		}
@@ -155,6 +171,8 @@ class Checkout extends MY_Controller {
 		redirect(base_url() . "checkout/finish_confirmpayment");
 		
 	}
+	
+	
 	
 }
 
