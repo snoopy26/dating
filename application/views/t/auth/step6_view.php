@@ -60,7 +60,7 @@ $this->load->view('t/general/body_single_view');
 		<!-- details -->
 		<form class="form-horizontal" method="post" action="<?php echo base_url(); ?>c/process_lookingfor">
 			<fieldset>
-				<legend>I am looking for</legend>
+				<legend>MY Ideal Patner</legend>
 				
 				<div class="control-group">
 					<label class="control-label" for="i_want">I Want</label>

@@ -253,6 +253,10 @@ class Personality_test_model extends CI_Model{
 		$location = $param['location'];
 		$must_be_single = $param['must_be_single'];
 		
+		$gender = $param['gender'];
+		
+		$aliasname = $param['aliasname'];
+		
 		$where_member_id = 
 		$where_education = 
 		$where_job =
@@ -261,7 +265,11 @@ class Personality_test_model extends CI_Model{
 		$where_ages =
 		$where_location =
 		$where_must_be_single = 
+		$where_gender =
+		$where_aliasname =
 		"";
+		
+		$where_gender = " AND a.member_gender = '$gender' ";
 		
 		if (!empty($member_id)) $where_member_id = "AND b.member_id <> $member_id";
 		if (!empty($education)) $where_education = "AND b.education IN ($education)";
@@ -271,6 +279,7 @@ class Personality_test_model extends CI_Model{
 		if (!empty($ages_start) && !empty($ages_end)) $where_ages = "AND (YEAR(CURDATE()) - YEAR(a.birthday)) BETWEEN $ages_start AND $ages_end ";
 		//if (!empty($location)) $where_location = "AND f.city_name = '$location' ";
 		if (!empty($must_be_single)) $where_must_be_single = "AND a.member_status = '$must_be_single' ";
+		if (!empty($aliasname)) $where_aliasname = "AND a.member_username like '%$aliasname%' ";
 		
 		$sql = "
 		SELECT
@@ -292,8 +301,17 @@ class Personality_test_model extends CI_Model{
 		f.city_name,
 		g.kecamatan_name,
 		h.kelurahan_name,
-		i.province_name
-		
+		i.province_name,
+
+		j.is_active flagged,
+			
+		k.`dating_id` dating_rel,
+
+		CASE 
+			WHEN k.member1 = '$member_id' THEN 'member1'
+			WHEN k.member2 = '$member_id' THEN 'member2'
+		END AS member_type
+
 		FROM
 		member__profile a
 		INNER JOIN member__details b ON
@@ -311,8 +329,23 @@ class Personality_test_model extends CI_Model{
 			a.address_kelurahan = h.kelurahan_id
 		INNER JOIN address__province i ON
 			a.address_province = i.province_id	
+
+		LEFT JOIN member__flag j ON
+			j.member_to_id = a.member_id
+
+		LEFT JOIN member__dating_rel k ON
+			( 
+				k.`member2` = a.`member_id` or
+				k.`member1` = a.`member_id`
+			)
+		
+		INNER JOIN (
+			SELECT order_id, account_id, payment_status FROM order__cart oc WHERE 1 AND oc.payment_status = 'confirmed'
+		) joc ON joc.account_id = a.member_id
 		
 		WHERE 1
+		
+		$where_gender
 		$where_member_id
 		$where_education
 		$where_job
@@ -321,6 +354,7 @@ class Personality_test_model extends CI_Model{
 		$where_ages 
 		$where_location
 		$where_must_be_single
+		$where_aliasname
 		";
 		return $results = $this->db->query($sql)->result();
 	}

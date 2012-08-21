@@ -11,9 +11,9 @@ body.single-page-theme{
 }
 
 .logo{
-	background:url(../img/logo.png) no-repeat transparent;
-	width:150px;
-	height:30px;
+	background:url(../img/logo1.png) no-repeat transparent;
+	width:133px;
+	height:27px;
 	text-indent:-999px;
 	position: relative;
 	top: 5px;
@@ -128,6 +128,7 @@ body.single-page-theme{
 .product-feature li {
 	position:relative;
 }
+/*
 .product-feature h5{
 	position:absolute;
 	left:5px;
@@ -138,6 +139,7 @@ body.single-page-theme{
 	padding: 5px 8px;
 	font-size: 12px;
 }
+*/
 
 a.thumbnail{
 	transition:all .2s ease-in-out;
@@ -166,6 +168,12 @@ a.thumbnail{
 	text-shadow: 0 1px 0 white;
 }
 
+.blockquote.big-p{
+	font-size:18px !important;
+	line-height: 1.5;
+	padding-right:20px;
+}
+
 .profile-cover .sub-header-wrap{
 	margin-bottom:0;
 }
@@ -182,6 +190,10 @@ a.thumbnail{
 
 .info-section{
 	margin-bottom:15px;
+}
+
+.user-detail .info-section{
+	margin-top:5px;
 }
 
 .info-section b{
@@ -324,7 +336,7 @@ p.big-match{
 	cursor:pointer;
 }
 
-.question .checkbox input{
+.question .checkbox input, .checkbox input{
 	margin-left:0;
 	margin-right:8px;
 }
@@ -563,15 +575,18 @@ p.big-match{
 .dating-profile li{
 	margin:3px 2px;
 	display:block;
-	overflow:hidden;
 	border-bottom:1px solid #ececec;
 	position:relative;
+}
+.dating-profile li.see_more_container{
+	border-bottom:none;
 }
 
 .dating-profile .span6, 
 .dating-profile .span5{
 	margin-left:0;
-	width:50%;
+	width: 47%;
+	padding-left: 15px;
 }
 
 .dating-image-avatar{
@@ -718,7 +733,7 @@ p.big-match{
 .poster-detail h4{
 	color: #1791C0;
 }
-.poster-detail p.big-p{
+.poster-detail .big-p{
 	font-size: 15px;
 	line-height: 20px;
 	color: #888;
@@ -732,6 +747,9 @@ p.big-match{
 	margin-bottom:10px;
 }
 
+.table th{
+	width:20%;
+}
 .table th, .table td {
 	font-size: 12px;
 }
@@ -750,7 +768,7 @@ p.big-match{
 	background-position:center center;
 }
 .user-detail *{
-	margin-left:10px;
+	
 }
 .user-detail .with-star{
 	margin-left:20px;
@@ -760,6 +778,13 @@ p.big-match{
 	margin-bottom: 0;
 	line-height: 20px;
 }
+
+.user-detail span.label{
+	margin-left: 20px;
+	margin-top: 5px;
+	display: inline-block;
+}
+
 .user-detail .info-section{
 	margin-bottom: 0;
 }
@@ -786,8 +811,8 @@ p.big-match{
 .rounded-rating{
 	cursor:pointer;
 	position: absolute;
-	bottom: 10px;
-	left:0px;
+	top: 10px;
+	left:10px;
 	display: block;
 	color: white;
 	padding: 10px 9px;
@@ -935,6 +960,10 @@ p.big-match{
 	margin-bottom:20px;
 	box-shadow:1px 1px 0 rgba(0, 0, 0, .1), 0 -1px 0 rgba(0, 0, 0, .07);
 }
+.dating-people-recommend li.see_more_container{
+	box-shadow: none;
+}
+
 .user-detail h3{
 	margin-top:10px;
 }
@@ -1069,4 +1098,167 @@ p.tagline b{
 .image_container img{
 	max-width:100%;
 	max-height:100%;
+}
+
+
+.yellow-box{
+	border: 3px solid #F2B01C;
+	border-radius: 5px;
+	box-shadow: 0px 0px 5px #BCC4CB;
+	background-color: #FAFAFA;
+}
+
+.kiss-info{
+	vertical-align:middle;
+	margin-top: 20px;
+}
+
+
+.user-detail .stat{
+	position:absolute;
+	top:10px;
+	right:0;
+}
+.user-detail .stat i{
+	margin-left:0px;
+}
+
+.match, .nomatch{
+	text-indent: -999px;
+}
+
+.message-container{
+	position: fixed;
+	top: 40px;
+	z-index: 100;
+	width: 100%;
+}
+.message-container .alert{
+	border-radius: 0;
+	text-align: center;
+}
+
+
+
+.banner-activity{
+	background: #EDEFF4 ;
+	padding:20px;
+}
+.banner-activity h1{
+	font-size: 19px;
+	margin-bottom: 5px;
+}
+.banner-activity h2{
+	color: #666;
+	font-size: 14px;
+	font-weight: normal;
+	line-height: 1.4em;
+	margin: 0;
+	padding:0;
+	text-transform: none;
+}
+
+.thumbnail{
+	position:relative;
+}
+.thumbnail .btn-stat{
+	position: absolute;
+	top:10px;
+	left:10px;
+}
+
+#thumbnails li.box{
+	overflow: hidden;
+}
+
+.reply_lists{
+	position:relative;
+	margin-bottom:0px;
+}
+.reply_lists li, 
+.reply_lists ul{
+	list-style: none;
+	margin:0;
+	padding:0;
+	overflow: hidden;
+	position:relative;
+	min-height:50px;
+	background: #eee;
+}
+.reply_lists li{
+	border-bottom:1px solid #DDD;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	-webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+	-moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+.reply_lists .list_img{
+	width:50px;
+	height:50px;
+	position: absolute;
+	top:0;
+	left:0;
+}
+.reply_lists .list_reply{
+	margin-left: 60px;
+	padding:8px 5px;
+	font-size:11px;
+}
+.reply_lists form{
+	padding:8px;
+	margin:0;
+}
+.reply_lists form textarea{
+	resize: vertical;
+	width:95%;
+}
+
+.count_reply{
+	min-height:0 !important;
+	cursor:pointer;
+	text-align: center;
+}
+.count_reply div{
+	margin-left: 0 !important;
+}
+
+#sayhello_detail .user-avatar{
+	width:30% !important;
+}
+#sayhello_detail .user-detail{
+	width:65% !important;
+}
+
+.single-info-section{
+	margin-top:8px;
+}
+.single-info-section p{
+	margin-bottom: 5px !important;
+	font-size: 16px !important;
+	font-weight: 300 !important;
+	line-height: 22.5px !important;
+}
+
+.thumb-name{
+	position: absolute;
+	bottom: 4px;
+	left: 4px;
+	background: rgba(0, 0, 0, .75);
+	padding: 5px 8px;
+	font-size: 15px;
+	color: white;
+}
+
+.dating-lists{
+
+}
+
+.label-date{
+	position: relative;
+	top: 10px;
+}
+.label-date a{
+	color:white !important;
 }

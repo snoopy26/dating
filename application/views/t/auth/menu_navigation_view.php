@@ -5,7 +5,7 @@
 		'about',
 		'details',
 		'design',
-		'looking for',
+		'ideal patner',
 		'questions',
 		'finish'
 	);

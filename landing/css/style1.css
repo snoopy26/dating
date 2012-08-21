@@ -1,0 +1,117 @@
+/*reset css*/
+*{
+	margin:0;
+	padding:0;
+}
+
+@font-face{
+	font-family:OpenSans_Regular;
+	src:url(Open_Sans/OpenSans-Regular.ttf);
+}
+@font-face{
+	font-family:OpenSans_Bold;
+	src:url(Open_Sans/OpenSans-Bold.ttf);
+}
+@font-face{
+	font-family:OpenSans_Italic;
+	src:url(Open_Sans/OpenSans-Italic.ttf);
+}
+@font-face{
+	font-family:OpenSans_Light;
+	src:url(Open_Sans/OpenSans-Light.ttf);
+}
+
+body{
+	font:1em/1.5em "OpenSans_Regular", Arial, Helvetica, Sans-serif;
+	color:#1f2225;
+	overflow-x:hidden;
+}
+p a{
+	color:#2a9ccc;
+}
+p a:hover{
+	color:#1f2225;
+}
+h1, h2{
+	font-family:"OpenSans_Bold";
+	margin-bottom:1em;
+}
+h1{
+	font-size:2em;
+	line-height:3em;
+}
+h2{
+	font-size:1.2em;
+	line-height:1.5em;
+}
+
+.container{
+	width:100%;
+	text-align:center;
+	margin:0 auto;
+}
+
+#logo img{
+	margin:10px 0;
+}
+
+.preview{
+	background-image:url('../img/RomanticDining.jpg');
+	background-position: center center;
+	background-size: cover;
+	background-repeat: no-repeat;
+	text-align: center;
+	padding-bottom: 2em;
+	margin-bottom: 2em;
+	height:400px;
+	border-top: 1px solid #dcdee0;
+	border-bottom: 1px solid #dcdee0;
+	position:relative;
+}
+
+.preview h1{
+	position:absolute;
+	bottom:0;
+	left:50%;
+	text-align:center;
+	color:white;
+	background-color: rgba(0,0,0,.75);
+	padding:5px 8px;
+	width:359px;
+	height:46px;
+	margin-left:-178px;
+	margin-bottom:0;
+	line-height: 1.4;
+}
+
+#support p{
+	font-size:.8em;
+	color:#909091;
+	font-style: italic;
+}
+
+#support p span{
+	font-size:1.2em;
+	color:#2a9ccc;
+}
+
+.footer{
+	background-color: #fcfbfb;
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#fcfbfb), to(#ffffff));
+	background-image: -webkit-linear-gradient(top, #fcfbfb, #ffffff);
+	background-image: -moz-linear-gradient(top, #fcfbfb, #ffffff);
+	background-image: -o-linear-gradient(top, #fcfbfb, #ffffff);
+	background-image: linear-gradient(to bottom, #fcfbfb, #ffffff);
+	border-top: 1px solid #dcdee0;
+	-webkit-box-shadow: inset 0 2px 5px #e6dede;
+	-moz-box-shadow: inset 0 2px 5px #e6dede;
+	box-shadow: inset 0 2px 5px #e6dede;
+	text-align: center;
+	padding: 2em 0;
+	margin-top: 4em;
+}
+
+.footer p{
+	font-size: .8em;
+	margin-bottom: 1em;
+}

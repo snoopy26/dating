@@ -11,7 +11,6 @@
 				</ul>
 				
 				
-				
 				<ul class="nav pull-right">
 					<?php 
 					$member = $this->session->userdata('2becomeus_login');
@@ -30,14 +29,27 @@
 					<li><a href="<?php echo base_url() . "auth/signup"; ?>"><b>Free Register</b></a></li>
 					<?php }else{ ?>
 					
-					<li class="<?php echo $explore_sel; ?>"><a href="<?php echo base_url(); ?>explore">Explore</a></li>
+					<?php if (!empty($countDating)){ ?>	
+					<li>
+						<span class="label label-important label-date"><a href="<?php echo base_url(); ?>dating/lists"><?php echo $countDating; ?> Date</a></span>
+					</li>
+					<?php } ?>
+
 					<li class="divider-vertical"></li>
-					<li class="dropdown <?php echo $profile_sel; ?>"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><b>Profile</b><b class="caret"></b></a>
+
+					<li class="dropdown <?php echo $explore_sel; ?>"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><b>Explore</b><b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							<li><a href="<?php echo base_url() . 'explore/welcome'; ?>">Welcome</a></li>
+							<li><a href="<?php echo base_url() . 'explore/matches'; ?>">Matches</a></li>
+						</ul>
+					</li>
+					
+					<li class="divider-vertical"></li>
+					<li class="dropdown <?php echo $profile_sel; ?>"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><b>Profile - <?php echo $member->member_username; ?></b> <b class="caret"></b></a>
 						<ul class="dropdown-menu">
 							<li><a href="<?php echo base_url() . 'profile/index/' . $member->member_username; ?>">View my profile page</a></li>
 							<li class="divider"></li>
-							<li><a href="#">Messages</a></li>
-							<li><a href="#">History</a></li>
+							<li><a href="<?php echo base_url() . 'activity/sayhello'; ?>">Activity</a></li>
 							<li class="divider"></li>
 							<li><a href="#">Settings</a></li>
 							<li><a href="<?php echo base_url() . "auth/signout" ?>">Sign Out</a></li>
@@ -58,12 +70,20 @@
 					</li>
 					
 					<li class="divider-vertical"></li>
-					<?php if (!empty($member)){  ?>
-					<li>
-						<form class="navbar-search pull-left" action="">
-							<input type="text" class="search-query span2" placeholder="Search">
-						</form>
-					</li>
+					<?php if (!empty($member)){  
+
+						/*
+						<li>
+							<form class="navbar-search pull-left" action="">
+								<input type="text" class="search-query span2" placeholder="Search">
+							</form>
+						</li>
+						*/
+
+						?>
+
+
+					
 					<?php } ?>
 				</ul>
 				

@@ -9,13 +9,16 @@ $this->load->view('t/general/body_view');
 	<!-- cover detail -->
 	<div class="row container relative-row profile-cover ">
 		<div class="span6 figure-div poster" style="background-image:url(<?php echo $this->filemanager->getPath($member->album1, "600x500"); ?>);"></div>
+		
 		<div class="span6 figure-div poster-detail">
 			<h2><?php echo $member->member_username; ?></h2>
+			
 			<h4><?php echo word_limiter($member->about10, 12); ?><?php 
 			if (str_word_count_utf8($member->about10) > 12) {
 				echo ' <a href="#" id="seemore-quote-btn"><small>see more</small></a>'; 
 			}
 			?></h4>
+			
 			<div class="info-section" style="margin-top:20px;">
 				<b>My Self Summary</b>
 				<p class="big-p"><?php echo word_limiter($member->about1, 45); 
@@ -24,10 +27,13 @@ $this->load->view('t/general/body_view');
 				}
 				?></p>
 			</div>
+			
 			<div class="with-star">
+				
 				<div class="figure">
 					<div class="info-section">
-					
+						<?php
+						/*
 						<div class="stat">
 							<b>Favorite: </b>
 							<p><span id="starsin" class="starsin4 stars-wrapper" data-original-title="3.7 stars average - 100 votes">5 Stars Hotel</span></p>
@@ -37,11 +43,15 @@ $this->load->view('t/general/body_view');
 								<p class="with-star"><span class="starsin3 stars-wrapper">3 Stars Hotel</span> <b class="note-star">55 votes</b></p>
 							</div>
 						</div>
+						*/
+						?>
 						
 						<div class="stat">
-							<b>Match: </b>
+							<b>Personality Score: </b>
 							
 							<?php
+							$listCompability = array();
+							
 							// ambil max score
 							$maxscore = array();
 							$count_type = count($max_score);
@@ -65,14 +75,23 @@ $this->load->view('t/general/body_view');
 								}else if ($score > 80 && $score <= 100){
 									$star = 5;
 								}
-								$stars_string .= '<p class="with-star"><span class="starsin'.$star.' stars-wrapper">'.$s->type_name.'</span> <b class="note-star">'.$score.'% <span style="text-align:right;">'.$s->type_name.'</span></b></p>';
+								$stars = '<p class="with-star"><span class="starsin'.$star.' stars-wrapper">'.$s->type_name.'</span> <b class="note-star">'.$score.'% <span style="text-align:right;">'.$s->type_name.'</span></b></p>';
+								
+								$stars_compability = '<p class="with-star"><span class="starsin'.$star.' stars-wrapper">'.$s->type_name.'</span> <b class="note-star">'.$score.'%</b></p>';
+								
+								$stars_string .= $stars;
+								
+								$listCompability[$s->type_name][] = $stars_compability;
 								
 								$total_score += $score;
 							}
 							$total_score /= $count_type;
+							$total_score = floor($total_score);
+							$total_score_string = $total_score .'% average of '. $member->jml_answer . ' questions';
+							$listCompability['Total Score'][] = $total_score_string;
 							?>
 							
-							<p id="matcher" class="big-match" data-original-title="<?php echo floor($total_score); ?>% average of <?php echo $member->jml_answer; ?> questions"><?php echo floor($total_score); ?>%</p>
+							<p id="matcher" class="big-match" data-original-title="<?php echo $total_score_string; ?>"><?php echo $total_score; ?>%</p>
 							<div class="hidden" id="hidden-matcher-content" style="display:none">
 								<?php echo $stars_string; ?>
 							</div>
@@ -82,6 +101,16 @@ $this->load->view('t/general/body_view');
 							<b>Questions: </b>
 							<p class="big-match"><?php echo $member->jml_answer; ?></p>
 						</div>
+						
+						<?php if ($member->member_id != $session_business->member_id){ ?>
+						<div class="stat">
+							<div class="btn-group" id="btn-exp-dating" data-toggle="buttons-checkbox" data-memberid="<?php echo $member->member_id; ?>">
+							  	<button class="btn  btn-info <?php echo (!empty($member->flagged)) ? "active" : ""; ?>" data-title="Flagged!" id="btn-flagged"><i class="icon-white icon-flag"></i></button>
+								<button class="btn  btn-info" data-title="Yah, Lets'go Dating"><i class="icon-white icon-heart"></i></button>
+								<button class="btn  btn-info" data-title="It's Bad"><i class="icon-white icon-thumbs-down"></i></button>
+							</div>
+						</div>
+						<?php } ?>
 						
 					</div>
 				</div>
@@ -113,24 +142,54 @@ $this->load->view('t/general/body_view');
 		<div class="span8">
 			<div class="figure">
 			
+				<?php 
+				$sayhello = $this->session->userdata('sayhello');
+				$this->session->unset_userdata('sayhello');
+				if (!empty($sayhello)){
+				?>
+				<div class="alert alert-success"><?php echo $sayhello; ?></div>
+				<?php 
+				}
+				?>
+			
 				<ul class="nav nav-tabs" id="tabMenu">
-					<li class="active"><a href="#lookingfor" data-toggle="tab">Looking for</a></li>
+					<li class="active"><a href="#lookingfor" data-toggle="tab">MY Ideal Patner</a></li>
 					<li><a href="#about" data-toggle="tab">About</a></li>
 					<li><a href="#details" data-toggle="tab">Details</a></li>
+					<?php if ($member->member_id != $session_business->member_id){ ?>
+					<li><a href="#compability" data-toggle="tab">Compability</a></li>
+					<li><a href="#say_hello" data-toggle="tab">Say Hello</a></li>
+					<?php } ?>
 				</ul>
 				
 				<div class="tab-content">
 					<div class="tab-pane active" id="lookingfor">
 						<div class="info-section">
-							<b style="margin-bottom:8px;display:block;">I am looking for: </b>
+							<b style="margin-bottom:8px;display:block;">MY Ideal Patner: </b>
 							<div class="alert alert-info" style="margin-top:10px;">
 								Saya ingin mencari pasangan dengan kriteria sebagai berikut.
 							</div>
 							<table class="table table-striped">
 								<tbody>
+									<?php if ($member->member_id != $session_business->member_id){ ?>
+									<tr>
+										<td></td>
+										<td></td>
+										
+										<th>Are You Matches? (Info About You) </th>
+										<th></th>
+										
+									</tr>
+									<?php } ?>
 									<tr>
 										<th>Gender</th>
 										<td><?php echo ($member->member_gender == "male") ? "Female" : "Male"; ?></td>
+										<?php if ($member->member_id != $session_business->member_id){ ?>
+										<td><?php echo ucfirst($sessionMemberBusiness->member_gender); ?></td>
+										<td><span class="<?php echo ($member->member_gender <> $sessionMemberBusiness->member_gender) ? "match icon-ok-sign" : "nomatch icon-minus-sign"; ?>">
+											<?php echo ($member->member_gender <> $sessionMemberBusiness->member_gender) ? "Match" : "No Match"; ?>
+										</span></td>
+										<?php } ?>
 									</tr>
 									
 									<?php
@@ -211,6 +270,12 @@ $this->load->view('t/general/body_view');
 										echo $lookingfor->i_want;
 										?>
 										</td>
+										<?php if ($member->member_id != $session_business->member_id){ ?>
+										<td><?php echo ucfirst($sessionMemberBusiness->member_interest); ?></td>
+										<td><span class="<?php echo ($lookingfor->i_want == ucfirst($sessionMemberBusiness->member_interest)) ? "match icon-ok-sign" : "nomatch icon-minus-sign"; ?>">
+											<?php echo ($lookingfor->i_want == ucfirst($sessionMemberBusiness->member_interest)) ? "Match" : "No Match"; ?>
+										</span></td>
+										<?php } ?>
 									</tr>
 									
 									<tr>
@@ -220,6 +285,15 @@ $this->load->view('t/general/body_view');
 										echo $lookingfor->age;
 										?>
 										</td>
+										<?php if ($member->member_id != $session_business->member_id){ ?>
+										<td><?php 
+										$currentAge = intval(date('Y', time()) - date('Y', strtotime($sessionMemberBusiness->birthday)));
+										echo $currentAge; 
+										?></td>
+										<td><span class="<?php echo ($lookingfor->ages_start <= $currentAge && $lookingfor->ages_end >= $currentAge) ? "match icon-ok-sign" : "nomatch icon-minus-sign"; ?>">
+											<?php echo ($lookingfor->ages_start <= $currentAge && $lookingfor->ages_end >= $currentAge) ? "Match" : "No Match"; ?>
+										</span></td>
+										<?php } ?>
 									</tr>
 									
 									<tr>
@@ -229,6 +303,10 @@ $this->load->view('t/general/body_view');
 										echo $lookingfor->location;
 										?>
 										</td>
+										<?php if ($member->member_id != $session_business->member_id){ ?>
+										<td></td>
+										<td></td>
+										<?php } ?>
 									</tr>
 									
 									<tr>
@@ -238,6 +316,21 @@ $this->load->view('t/general/body_view');
 										echo ($lookingfor->must_be_single == 1) ? "Yes" : "Tidak harus";
 										?>
 										</td>
+										<?php if ($member->member_id != $session_business->member_id){ ?>
+										<td><?php echo ucfirst($sessionMemberBusiness->member_status); ?></td>
+										<?php 
+										$match_class = 'nomatch icon-minus-sign';
+										$match_string = 'No Match';
+										if ($lookingfor->must_be_single == 0) {
+											$match_class = "match icon-ok-sign";
+											$match_string = "Match";
+										} else if ($lookingfor->must_be_single == 1 && $sessionMemberBusiness->member_status == "single") {
+											$match_class = "match icon-ok-sign";
+											$match_string = "Match";
+										} 
+										?>
+										<td><span class="<?php echo $match_class; ?>"><?php echo $match_string; ?></span></td>
+										<?php } ?>
 									</tr>
 									
 									<tr>
@@ -260,6 +353,22 @@ $this->load->view('t/general/body_view');
 										
 										?>
 										</td>
+										<?php if ($member->member_id != $session_business->member_id){ 
+											$match_class = "nomatch icon-minus-sign";
+											$match_string = "No Match";
+											if (count($lookingfor_religion) == 1 && $lookingfor_religion == $sessionMemberBusiness->religion){
+												$match_class = "match icon-ok-sign";
+												$match_string = "Match";
+											}else if (count($lookingfor_religion) > 1 && in_array($sessionMemberBusiness->religion, $lookingfor_religion)){
+												$match_class = "match icon-ok-sign";
+												$match_string = "Match";
+											}
+										?>
+										<td><?php echo ucfirst($sessionMemberBusiness->religion); ?></td>
+										<td><span class="<?php echo $match_class; ?>">
+											<?php echo $match_string; ?>
+										</span></td>
+										<?php } ?>
 									</tr>
 									<tr>
 										<th>Education</th>
@@ -278,9 +387,24 @@ $this->load->view('t/general/body_view');
 											echo "</ul>";
 											
 										}
-										
 										?>
 										</td>
+										<?php if ($member->member_id != $session_business->member_id){ 
+											$match_class = "nomatch icon-minus-sign";
+											$match_string = "No Match";
+											if (count($lookingfor_education) == 1 && $lookingfor_education == $sessionMemberBusiness->education){
+												$match_class = "match icon-ok-sign";
+												$match_string = "Match";
+											}else if (count($lookingfor_education) > 1 && in_array($sessionMemberBusiness->education, $lookingfor_education)){
+												$match_class = "match icon-ok-sign";
+												$match_string = "Match";
+											}
+										?>
+										<td><?php echo ucfirst($sessionMemberBusiness->education); ?></td>
+										<td><span class="<?php echo $match_class; ?>">
+											<?php echo $match_string; ?>
+										</span></td>
+										<?php } ?>
 									</tr>
 									<tr>
 										<th>Job</th>
@@ -302,7 +426,35 @@ $this->load->view('t/general/body_view');
 										
 										?>
 										</td>
+										<?php if ($member->member_id != $session_business->member_id){ 
+											$match_class = "nomatch icon-minus-sign";
+											$match_string = "No Match";
+											if (count($lookingfor_job) == 1 && $lookingfor_job == $sessionMemberBusiness->job){
+												$match_class = "match icon-ok-sign";
+												$match_string = "Match";
+											}else if (count($lookingfor_job) > 1 && in_array($sessionMemberBusiness->job, $lookingfor_job)){
+												$match_class = "match icon-ok-sign";
+												$match_string = "Match";
+											}
+										?>
+										<td><?php echo ucfirst($sessionMemberBusiness->job); ?></td>
+										<td><span class="<?php echo $match_class; ?>">
+											<?php echo $match_string; ?>
+										</span></td>
+										<?php } ?>
 									</tr>
+									
+									<tr>
+										<th>What I'm looking for</th>
+										<td>
+										<?php echo nl2br($member->about8);?>
+										</td>
+										<?php if ($member->member_id != $session_business->member_id){ ?>
+										<td></td>
+										<td></td>
+										<?php } ?>
+									</tr>
+									
 								</tbody>
 							</table>
 						</div>
@@ -370,6 +522,26 @@ $this->load->view('t/general/body_view');
 								
 							<table class="table table-striped">
 								<tbody>
+									<?php if ($member->member_id != $session_business->member_id){ ?>
+									<tr>
+										<th></th>
+										<th></th>
+										
+										<th>Are You Matches? (Looking for About You)</th>
+										<th></th>
+										
+									</tr>
+									<?php } ?>
+									<tr>
+										<th>I am</th>
+										<td><?php echo ucfirst($member->member_gender); ?></td>
+										<?php if ($member->member_id != $session_business->member_id){ ?>
+										<td><?php echo ($sessionMemberBusiness->member_gender == "Male") ? "Female" : "Male"; ?></td>
+										<td><span class="<?php echo ($member->member_gender <> $sessionMemberBusiness->member_gender) ? "match icon-ok-sign" : "nomatch icon-minus-sign"; ?>">
+											<?php echo ($member->member_gender <> $sessionMemberBusiness->member_gender) ? "Match" : "No Match"; ?>
+										</span></td>
+										<?php } ?>
+									</tr>
 									<tr>
 										<th>Height</th>
 										<td>
@@ -388,61 +560,338 @@ $this->load->view('t/general/body_view');
 										}
 										?>
 										</td>
+										<?php if ($member->member_id != $session_business->member_id){ ?>
+										<td></td>
+										<td></td>
+										<?php } ?>
 									</tr>
 									<tr>
 										<th>Body type</th>
 										<td><?php echo $member->body_type; ?></td>
+										<?php if ($member->member_id != $session_business->member_id){ ?>
+										<td></td>
+										<td></td>
+										<?php } ?>
 									</tr>
 									<tr>
 										<th>Smokes</th>
 										<td><?php echo $member->smokes; ?></td>
+										<?php if ($member->member_id != $session_business->member_id){ ?>
+										<td></td>
+										<td></td>
+										<?php } ?>
 									</tr>
 									<tr>
 										<th>Drinks</th>
 										<td><?php echo $member->drinks; ?></td>
+										<?php if ($member->member_id != $session_business->member_id){ ?>
+										<td></td>
+										<td></td>
+										<?php } ?>
 									</tr>
 									<tr>
 										<th>Drugs</th>
 										<td><?php echo $member->drugs; ?></td>
+										<?php if ($member->member_id != $session_business->member_id){ ?>
+										<td></td>
+										<td></td>
+										<?php } ?>
 									</tr>
 									<tr>
 										<th>Religion</th>
 										<td><?php echo $member->religion; ?></td>
+										<?php if ($member->member_id != $session_business->member_id){ ?>
+										<td><?php 
+										$lookingfor_religion = explode("/:/", $sessionLookingfor->religion);
+										$match_class = "nomatch icon-minus-sign";
+										$match_string = "No Match";
+										if (count($lookingfor_religion) == 1){
+											$lookingfor_religion = $sessionLookingfor->religion;
+											echo $lookingfor_religion;
+											if ($lookingfor_religion == $sessionLookingfor->religion){
+												$match_class = "match icon-ok-sign";
+												$match_string = "Match";
+											}
+										}else{
+											
+											echo "<ul>";
+											foreach($lookingfor_religion as $religion){
+												echo '<li>'.$religion.'</li>';
+											}
+											echo "</ul>";
+											
+											if (in_array($member->religion, $lookingfor_religion)){
+												$match_class = "match icon-ok-sign";
+												$match_string = "Match";
+											}
+
+										}
+										?></td>
+										<td><span class="<?php echo $match_class; ?>">
+											<?php echo $match_string; ?>
+										</span></td>
+										<?php } ?>
 									</tr>
 									<tr>
 										<th>Education</th>
 										<td><?php echo $member->education; ?></td>
+										<?php if ($member->member_id != $session_business->member_id){ ?>
+										<td><?php 
+										$lookingfor_education = explode("/:/", $sessionLookingfor->education);
+										$match_class = "nomatch icon-minus-sign";
+										$match_string = "No Match";
+										if (count($lookingfor_education) == 1){
+											$lookingfor_education = $sessionLookingfor->education;
+											echo $lookingfor_education;
+											if ($lookingfor_education == $sessionLookingfor->education){
+												$match_class = "match icon-ok-sign";
+												$match_string = "Match";
+											}
+										}else{
+											
+											echo "<ul>";
+											foreach($lookingfor_education as $education){
+												echo '<li>'.$education.'</li>';
+											}
+											echo "</ul>";
+
+											if (in_array($member->education, $lookingfor_education)){
+												$match_class = "match icon-ok-sign";
+												$match_string = "Match";
+											}
+											
+										}
+										?></td>
+										<td><span class="<?php echo $match_class; ?>">
+											<?php echo $match_string; ?>
+										</span></td>
+										<?php } ?>
 									</tr>
 									<tr>
 										<th>Job</th>
 										<td><?php echo $member->job; ?></td>
+										<?php if ($member->member_id != $session_business->member_id){ ?>
+										<td><?php 
+										$lookingfor_job = explode("/:/", $sessionLookingfor->job);
+										$match_class = "nomatch icon-minus-sign";
+										$match_string = "No Match";
+										if (count($lookingfor_job) == 1){
+											$lookingfor_job = $lookingfor->job;
+											echo $lookingfor_job;
+											if ($lookingfor_job == $sessionLookingfor->job){
+												$match_class = "match icon-ok-sign";
+												$match_string = "Match";
+											}
+										}else{
+											
+											echo "<ul>";
+											foreach($lookingfor_job as $job){
+												echo '<li>'.$job.'</li>';
+											}
+											echo "</ul>";
+
+											if (in_array($member->job, $lookingfor_job)){
+												$match_class = "match icon-ok-sign";
+												$match_string = "Match";
+											}
+											
+										}
+										?></td>
+										<td><span class="<?php echo $match_class; ?>">
+											<?php echo $match_string; ?>
+										</span></td>
+										<?php } ?>
 									</tr>
 									<tr>
 										<th>Income</th>
 										<td><?php echo $member->income; ?></td>
-									</tr>
-									
-									<tr>
-										<th>City Name</th>
-										<td><?php echo $member->city_name; ?></td>
-									</tr>
-									<tr>
-										<th>Kecamatan Name</th>
-										<td><?php echo $member->kecamatan_name; ?></td>
+										<?php if ($member->member_id != $session_business->member_id){ ?>
+										<td></td>
+										<td></td>
+										<?php } ?>
 									</tr>
 									<tr>
-										<th>Kelurahan Name</th>
-										<td><?php echo $member->kelurahan_name; ?></td>
-									</tr>
-									<tr>
-										<th>Province Name</th>
-										<td><?php echo $member->province_name; ?></td>
+										<th>Location</th>
+										<td><?php echo $member->city_name .', '. $member->kecamatan_name .' <br />'. $member->kelurahan_name .', '. $member->province_name; ?></td>
+										<?php if ($member->member_id != $session_business->member_id){ ?>
+										<td></td>
+										<td></td>
+										<?php } ?>
 									</tr>
 									
 								</tbody>
 							</table>
 						</div>
 					</div>
+					
+					<?php if ($member->member_id != $session_business->member_id){ ?>
+					<div class="tab-pane" id="compability">
+						<table class="table table-bordered">
+							<thead>
+								<tr>
+									<th>Personality</th>
+									<th>Personality yang diharapkan oleh YOU</th>
+									<th><?php echo ucfirst($member->member_username); ?></th>
+									<th>YOU</th>
+									<th>Match</th>
+								</tr>
+							</thead>
+							<tbody>
+								
+								<?php
+								// ambil max score
+								$stars_string = "";
+								$total_score = 0;
+								foreach($currentuser_total_score as $s){
+									
+									$score = floor( ($s->score / ($s->jml_question * $maxscore[$s->type_id])) * 100 );
+									$star = 0;
+									if ($score > 0 && $score <=20){
+										$star = 1;
+									}else if ($score > 20 && $score <= 40){
+										$star = 2;
+									}else if ($score > 40 && $score <= 60){
+										$star = 3;
+									}else if ($score > 60 && $score <= 80){
+										$star = 4;
+									}else if ($score > 80 && $score <= 100){
+										$star = 5;
+									}
+									$stars = '<p class="with-star"><span class="starsin'.$star.' stars-wrapper">'.$s->type_name.'</span> <b class="note-star">'.$score.'% <span style="text-align:right;">'.$s->type_name.'</span></b></p>';
+								
+									$stars_compability = '<p class="with-star"><span class="starsin'.$star.' stars-wrapper">'.$s->type_name.'</span> <b class="note-star">'.$score.'%</b></p>';
+								
+									$stars_string .= $stars;
+									
+									$listCompability[$s->type_name][] = $stars_compability;
+									
+									$total_score += $score;
+								}
+								$total_score /= $count_type;
+								$total_score = floor($total_score);
+								$total_score_string = $total_score .'% average of '. $member->jml_answer . ' questions';
+								$listCompability['Total Score'][] = $total_score_string;
+									
+												
+								foreach($listCompability as $i => $lc){
+									
+								?>
+								<tr>
+									<th><?php echo $i; ?></th>
+									<td><?php echo (!empty($personality_diff[$i])) ? $personality_diff[$i] : ""; ?>
+									</td>
+									<?php foreach($lc as $c){
+									?>
+									<td><?php echo $c; ?></td>
+									<?php 
+									} ?>
+									<td>
+									<?php 
+									$score = trim(substr(strip_tags(current($lc)), -4, -1)); 
+									if ($score >= 0 && $score <= 65) $score_string = "Kurang";
+									else if ($score >= 65 && $score <= 80) $score_string = "Rata";
+									else if ($score >= 80 && $score <= 100) $score_string = "Sangat";
+									if (!empty($personality_diff[$i])){
+										if ($score_string == $personality_diff[$i])
+											echo "<span class='match icon-ok-sign'>Match</span>";
+										else 
+											echo "<span class='nomatch icon-minus-sign'>No Match</span>";
+									}
+									?>
+									</td>
+								</tr>
+								<?php
+									
+								}
+								
+								?>
+								
+								
+							</tbody>
+						</table>
+						<div class="alert alert-info">
+							<h4>Persentase</h4>
+							<ul>
+								<li>0% - 65% = Kurang</li>
+								<li>65% - 80% = Rata</li>
+								<li>80% - 100% = Sangat</li>
+							</ul>
+						</div>
+					</div>
+					
+					<div class="tab-pane" id="say_hello">
+						<b style="margin-bottom:8px;display:block;">Say Hello between <?php echo ucfirst($member->member_username); ?> and YOU</b>
+						
+						<div class="tab-pane dating-people-recommend dating-profile active" id="rekomendasi">
+							<?php if (!empty($getSayHelloSelectedUser)){ ?>
+							<ul>
+								<?php 
+									foreach($getSayHelloSelectedUser as $p){
+										$photo = $this->filemanager->getPath($p->album1, '300x200');
+										$member_username = $p->member_username;
+										$sayhello = $p->kiss_message;
+										
+										if ($p->member_to_id != $member->member_id){
+								?>
+								<li>
+									<div class="span6 user-avatar" style="background-image:url(<?php echo $photo; ?>);">Foto Avatar</div>
+									<div class="span6 user-detail">
+										<h3><a href="<?php echo base_url() . 'profile/index/' . $member_username; ?>"><?php echo $member_username; ?></a></h3>
+										<div class="info-section" >
+											<b>Say Hello to YOU: </b>
+											<blockquote ><p class="blockquote big-p "><?php echo $sayhello; ?><p><small><?php echo strftime("%A, %d %B %Y, %H:%M", strtotime($p->lastupdate)); ?>. <a href="<?php echo base_url(); ?>activity/sayhello?msid=<?php echo $p->kiss_message_id; ?>"><?php echo (!empty($p->count_reply)) ? "(".$p->count_reply." reply)." : ""; ?> Details.</a></small> </blockquote>
+										</div>
+										
+
+									</div>
+
+									<div class="clear" style="clear:both;"></div>
+
+								</li>
+								<?php
+									
+										}else{
+								
+								?>
+								<li>
+									<div class="span6 user-detail">
+										<h3><a href="<?php echo base_url() . 'profile/index/' . $member_username; ?>"><?php echo $member_username; ?></a></h3>
+										<div class="info-section" >
+											<b>Say Hello: </b>
+											<blockquote ><p class="blockquote big-p "><?php echo $sayhello; ?><p><small><?php echo strftime("%A, %d %B %Y, %H:%M", strtotime($p->lastupdate)); ?>. <a href="<?php echo base_url(); ?>activity/sayhello?msid=<?php echo $p->kiss_message_id; ?>"><?php echo (!empty($p->count_reply)) ? "(".$p->count_reply." reply)." : ""; ?> Details.</a></small> </blockquote>
+										</div>
+										
+									</div>
+									<div class="span6 user-avatar" style="background-image:url(<?php echo $photo; ?>);">Foto Avatar</div>
+								
+									<div class="clear" style="clear:both;"></div>
+								</li>
+								<?php
+										
+										}
+								
+									}
+
+								if ($this->message_model->foundRow > 3){
+								?>
+								<li class="see_more_container">
+									<a href="#" class="btn" id="see_more" 
+									data-user1="<?php echo $this->session_business->member_id; ?>"
+									data-user2="<?php echo $this->business->member_id; ?>"
+									>See More</a>
+									<div class="clear" style="clear:both;"></div>
+								</li>
+								<?php
+								}	
+								?>
+							</ul>
+							<?php }else echo "<p class='alert alert-error'>Tidak ada kiriman say hello.</p>"; ?>
+						</div>
+						
+					</div>
+					
+					<?php } ?>
+					
 				</div>
 			
 			</div>
@@ -451,13 +900,28 @@ $this->load->view('t/general/body_view');
 		
 		<div class="span3 span3_edit">
 			
-			<div class="figure-questions figure-top">
-				<form>
-					<label><b>Say Hello to her/his:</b></label>
-					<textarea class="input-xlarge auto-size" id="textarea" rows="4" cols="4"></textarea>
-					<button type="submit" class="btn">Send</button>
-				</form>
+			<?php if ($member->member_id != $session_business->member_id){ ?>
+			<div class="title-border">
+				<h3><span><b style="color:red;">Say</b> Hello</span></h3>
 			</div>
+			<div class="detail-border-container">
+				<div class="detail-border">
+					<form method="post" action="<?php echo base_url() . "profile/sendsayhello/"; ?>">
+						<?php
+						foreach($options_kiss as $k){
+						?>
+						<label class="checkbox">
+							<input type="radio" name="kiss" value="<?php echo $k->kiss_id; ?>" ><?php echo $k->kiss_message; ?>
+						</label>
+						<?php
+						}
+						?>
+						<input type="hidden" name="mid" value="<?php echo $member->member_id; ?>" />
+						<button type="submit" class="btn" name="say" value="1">Say It!</button>
+					</form>
+				</div>
+			</div>
+			<?php } ?>
 			
 			<div class="title-border">
 				<h3><span>Dating Yuukk <b style="color:red;">New!!!</b></span></h3>
@@ -468,6 +932,9 @@ $this->load->view('t/general/body_view');
 				</div>
 			</div>
 			
+			<hr />
+			
+			<!--
 			<div class="figure-questions">
 				<p class="note">We'll compare your answer to millions of others to find the best people for you.</p>
 				<div class="btn-group" style="position:absolute;bottom:10px;right:10px;z-index:99;">
@@ -499,7 +966,7 @@ $this->load->view('t/general/body_view');
 					</div>
 				</div>
 			</div>
-			
+			-->
 			
 			
 		</div>

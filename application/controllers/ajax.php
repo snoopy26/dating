@@ -2,6 +2,19 @@
 
 class Ajax extends CI_Controller {
 	
+	var $session_business;
+	var $business;
+
+	function __construct(){
+		parent::__construct();
+		$this->load->library('filemanager');
+		$this->load->model('account_model');
+		$member = $this->session->userdata('2becomeus_login');
+		$this->session_business = $member;
+		if (!empty($member))
+		$this->business = $this->account_model->checkMember($this->session_business->member_id);
+	}
+
 	function generate_day(){
 		$this->load->library('birthday');
 		
@@ -129,6 +142,117 @@ class Ajax extends CI_Controller {
 		</div>
 		';
 		return $html;
+	}
+
+	function getSeeMoreSayHello(){
+		$this->load->model('message_model');
+
+		$user1 = $this->input->get_post('user1');
+		$user2 = $this->input->get_post('user2');
+		$limit = $this->input->get_post('limit');
+
+		$getSayHelloSelectedUser = $this->message_model->getSayHelloSelectedUser($user1, $user2, $limit);
+		$html = "";
+		if (!empty($getSayHelloSelectedUser)){
+			foreach($getSayHelloSelectedUser as $p){
+				$photo = $this->filemanager->getPath($p->album1, '300x200');
+				$member_username = $p->member_username;
+				$sayhello = $p->kiss_message;
+				
+				if ($p->member_to_id != $user2){
+					$html .= '
+					<li>
+						<div class="span6 user-avatar" style="background-image:url('.$photo.');">Foto Avatar</div>
+						<div class="span6 user-detail">
+							<h3><a href="'.base_url() . 'profile/index/' . $member_username.'">'.$member_username.'</a></h3>
+							<div class="info-section" >
+								<b>Say Hello to YOU: </b>
+								<blockquote ><p class="blockquote big-p ">'.$sayhello.'<p><small>'.strftime("%A, %d %B %Y, %H:%M", strtotime($p->lastupdate)).' <a href="'.base_url().'activity/sayhello?msid='.$p->kiss_message_id.'">Details.</a></small> </blockquote>
+							</div>
+							
+						</div>
+					</li>';
+				}else{
+					$html .= '
+					<li>
+						<div class="span6 user-detail">
+							<h3><a href="'.base_url() . 'profile/index/' . $member_username.'">'.$member_username.'</a></h3>
+							<div class="info-section" >
+								<b>Say Hello: </b>
+								<blockquote ><p class="blockquote big-p ">'.$sayhello.'<p><small>'.strftime("%A, %d %B %Y, %H:%M", strtotime($p->lastupdate)).' <a href="'.base_url().'activity/sayhello?msid='.$p->kiss_message_id.'">Details.</a></small> </blockquote>
+							</div>
+							
+						</div>
+						<div class="span6 user-avatar" style="background-image:url('.$photo.');">Foto Avatar</div>
+					</li>
+					';		
+				}
+		
+			}
+		}
+
+		echo json_encode(array(
+			'html' => $html
+		));
+
+	}
+
+	function replyKissMessage(){
+		$message = $this->input->get_post('message');
+		$kissmessageid = $this->input->get_post('kissmessageid');
+		if (empty($this->business)){
+			echo json_encode(array(
+				'status' => 0,
+				'error' => 'Something Error.'
+			));
+		}else{
+			$member_id = $this->business->member_id;
+			$this->load->model('message_model');
+			$replyId = $this->message_model->replyKissMessage($member_id, $message, $kissmessageid);
+			$photo = $this->filemanager->getPath($this->business->album1, "50x50");
+			$html = '
+			<li id="listReply_'.$replyId.'">
+				<div class="list_img"><a href="'.base_url().'profile/index/'.$this->business->member_username.'"><img src="'.$photo.'" /></a></div>
+				<div class="list_reply"><b><a href="'.base_url().'profile/index/'.$this->business->member_username.'">'.$this->business->member_username.'</a></b>, <span>'.$message.'</span></div>
+			</li>
+			';
+			echo json_encode(array(
+				'status' => 1,
+				'html' => $html
+			));
+		}
+	}
+
+	function getReplyKissMessage(){
+		$kissmessageid = $this->input->get_post('kissmessageid');
+		$this->load->model('message_model');
+		$results = $this->message_model->getReplyKissMessage($kissmessageid);
+		$html = "";
+		$replyId = array();
+		foreach($results as $result){
+			$photo = $this->filemanager->getPath($result->album1, "50x50");
+			$message = $result->message;
+			$html .= '
+			<li id="listReply_'.$result->reply_id.'">
+				<div class="list_img"><a href="'.base_url().'profile/index/'.$result->member_username.'"><img src="'.$photo.'" /></a></div>
+				<div class="list_reply"><b><a href="'.base_url().'profile/index/'.$result->member_username.'">'.$result->member_username.'</a></b>, <span>'.$message.'</span></div>
+			</li>
+			';
+			$replyId[] = $result->reply_id;
+		}
+		echo json_encode(array(
+			'status' => 1,
+			'html' => $html,
+			'replyId' => $replyId
+		));
+	}
+
+	function flagUser(){
+		$this->load->model('flag_model');
+		$member_id = $this->business->member_id;
+		$member_to_id = $this->input->get_post('memberid');
+		$isActive = $this->input->get_post('isActive');
+		$this->flag_model->flagUser($member_id, $member_to_id, $isActive);
 	}
 	
 }

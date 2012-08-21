@@ -24,7 +24,7 @@ $this->load->view('t/general/body_single_view');
 			$about6 = $this->session->userdata('about6');
 			
 			$about7 = $this->session->userdata('about7');
-			//$about8 = $this->session->userdata('about8');
+			$about8 = $this->session->userdata('about8');
 			$about9 = $this->session->userdata('about9');
 			
 			$about10 = $this->session->userdata('about10');
@@ -38,7 +38,7 @@ $this->load->view('t/general/body_single_view');
 			$this->session->unset_userdata('about5');
 			$this->session->unset_userdata('about6');
 			$this->session->unset_userdata('about7');
-			//$this->session->unset_userdata('about8');
+			$this->session->unset_userdata('about8');
 			$this->session->unset_userdata('about9');
 			$this->session->unset_userdata('about10');
 		?>
@@ -145,10 +145,9 @@ $this->load->view('t/general/body_single_view');
 						<?php } ?>
 					</div>
 				</div>
-				<?php
-				/*
+				
 				<div class="control-group">
-					<label class="control-label" for="about8">I'm looking for</label>
+					<label class="control-label" for="about8">What I'm looking for</label>
 					<div class="controls">
 						<textarea name="about8" class="input-xlarge" id="about8" rows="4" cols="4"><?php echo $about8; ?></textarea>
 						<?php if (!empty($errors['about8_error'])){ ?>
@@ -158,8 +157,7 @@ $this->load->view('t/general/body_single_view');
 						<?php } ?>
 					</div>
 				</div>
-				*/
-				?>
+			
 				<div class="control-group">
 					<label class="control-label" for="about9">You should message me if</label>
 					<div class="controls">

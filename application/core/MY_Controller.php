@@ -19,6 +19,9 @@ class MY_Controller extends CI_Controller{
 		if ($this->detect_mobile() === TRUE){
 			$this->ismobile = TRUE;
 		}
+
+		// count member dating
+		$this->member_dating();
 	}
 	
 	function detect_mobile(){
@@ -52,6 +55,14 @@ class MY_Controller extends CI_Controller{
 		
 		$this->data['css_tags'] = cdn_url() . 'min/?f=' . implode(',', $css);
 		$this->data['js_tags'] = cdn_url() . 'min/?f=' . implode(',', $js);
+	}
+
+	function member_dating(){
+		$this->load->model('dating_model');
+		$member = $this->session->userdata('2becomeus_login');
+		$countDating = 0;
+		if (!empty($member)) $countDating = $this->dating_model->countDating($member->member_id)->count_dating;
+		$this->data['countDating'] = $countDating;
 	}
 
 }

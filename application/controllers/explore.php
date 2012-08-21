@@ -17,6 +17,27 @@ class Explore extends MY_Controller {
 	}
 	
 	function index(){
+		$this->welcome();
+	}
+	
+	function welcome(){
+		$this->load->model('personality_test_model');
+		$this->load->model('checkout_model');
+		$this->load->library('utils');
+		
+		$check_order = $this->checkout_model->check_order($this->business->member_id);
+		$this->data['check_order'] = $check_order;
+
+		$tipsHubungan = "";
+		//$this->load->library('crawl/crawl_hatikupercaya');
+		//$tipsHubungan = $this->crawl_hatikupercaya->tagHubungan();
+		//$this->data['tipsHubungan'] = $tipsHubungan;
+		
+		$this->default_param('', array('js/custom/explore.js'));
+		$this->load->view('t/explore/welcome_view', $this->data);
+	}
+	
+	function matches(){
 		$this->load->model('personality_test_model');
 		$this->load->model('checkout_model');
 		$this->load->library('utils');
@@ -26,12 +47,78 @@ class Explore extends MY_Controller {
 		
 		if (!empty($check_order) && $check_order->payment_status == "confirmed"){
 		
-			// =========================================
-			// PROSES 1
-			$lookingfor = $this->personality_test_model->getLookingFor($this->business->member_id);
-			$this->data['lookingfor'] = $lookingfor;
-			// =========================================
-			
+			$find = $this->input->get_post('find');
+		
+			$this->data['aliasname'] = "";
+			$this->data['iwant'] = "Straight";
+			$this->data['age_start'] = "18";
+			$this->data['age_end'] = "24";
+			$this->data['location'] = "Near me";
+			$this->data['must_be_single'] = "1";
+			$this->data['religion'] = "";
+			$this->data['education'] = "";
+			$this->data['job'] = "";
+		
+			if (empty($find)){
+				// =========================================
+				// PROSES 1
+				$lookingfor = $this->personality_test_model->getLookingFor($this->business->member_id);
+				$this->data['lookingfor'] = $lookingfor;
+				// =========================================
+				
+			}else{
+				
+				// result find ideal patner
+				$aliasname = $this->input->get_post('aliasname');
+				$iwant = $this->input->get_post('iwant');
+				$age_start = $this->input->get_post('age_start');
+				$age_end = $this->input->get_post('age_end');
+				$location = $this->input->get_post('location');
+				$must_be_single = $this->input->get_post('must_be_single');
+				$religion = $this->input->get_post('religion');
+				$education = $this->input->get_post('education');
+				$job = $this->input->get_post('job');
+				
+				$this->data['aliasname'] = $aliasname;
+				$this->data['iwant'] = $iwant;
+				$this->data['age_start'] = $age_start;
+				$this->data['age_end'] = $age_end;
+				$this->data['location'] = $location;
+				$this->data['must_be_single'] = $must_be_single;
+				$this->data['religion'] = $religion;
+				$this->data['education'] = $education;
+				$this->data['job'] = $job;
+
+				$lookingfor_currentuser = (array) $this->personality_test_model->getLookingFor($this->business->member_id);
+								
+				if (!empty($education)) {
+					if (in_array("Any", $education)) $education = array_diff($education, array('Any'));
+					if (count($education) > 0) $education = implode("/:/", $education);
+				}
+				if (!empty($job)) {
+					if (in_array("Any", $job)) $job = array_diff($job, array('Any'));
+					if (count($job) > 0) $job = implode("/:/", $job);
+				}				
+				if (!empty($religion)) {
+					if (in_array("Any", $religion)) $religion = array_diff($religion, array('Any'));
+					if (count($religion) > 0) $religion = implode("/:/", $religion);
+				}
+				
+				$lookingfor_data = array(
+					'education' => $education,
+					'job' => $job,
+					'religion' => $religion,
+					'location' => $location,
+					'must_be_single' => $must_be_single,
+					'i_want' => $iwant,
+					'ages_start' => $age_start,
+					'ages_end' => $age_end,
+					'aliasname' => $aliasname
+				);
+								
+				$lookingfor = (Object) array_merge ($lookingfor_currentuser,$lookingfor_data);
+								
+			}
 			
 			// =========================================
 			// PROSES 2
@@ -39,7 +126,6 @@ class Explore extends MY_Controller {
 			$this->data['matching'] = $matching;
 			// =========================================
 			
-		
 			// =========================================
 			// PROSES 3
 			$user_personality = $this->proses3_matching($lookingfor, $matching);
@@ -48,53 +134,81 @@ class Explore extends MY_Controller {
 		
 		}
 		
-		$this->default_param('', array('js/custom/explore.js'));
-		$this->load->view('t/explore/tmp_explore_view', $this->data);
+		$this->default_param(
+			array(
+			'css/datepicker.css',
+			'css/jquery.timepicker.css'
+			)
+			, array(
+			'js/datepicker.js',
+			'js/jquery.timepicker.js',
+			'js/custom/explore.js', 
+			'js/custom/step_lookingfor.js'
+		));
+		$this->load->view('t/explore/matches_view', $this->data);
 	}
 	
 	function proses2_matching($lookingfor){
 		$this->load->model('personality_test_model');
 		
+		// gender
+		$gender = ($this->business->member_gender == "male") ? "female" : "male";
+		
 		// education
-		$education = explode("/:/", $lookingfor->education);
-		if (count($education) == 0){
-			$education_string = $education;
-		}else{
-			$education_string = "'" . implode("','", explode("/:/", $lookingfor->education)) . "'";
+		$education_string = "";
+		if (!empty($lookingfor->education) && property_exists($lookingfor, "education")){
+			$education = explode("/:/", $lookingfor->education);
+			if (count($education) == 0){
+				$education_string = $education;
+			}else{
+				$education_string = "'" . implode("','", explode("/:/", $lookingfor->education)) . "'";
+			}
 		}
 		
 		// job
-		$job = explode("/:/", $lookingfor->job);
-		if (count($job) == 0){
-			$job_string = $job;
-		}else{
-			$job_string = "'" . implode("','", explode("/:/", $lookingfor->job)) . "'";
+		$job_string = "";
+		if (!empty($lookingfor->job) && property_exists($lookingfor, "job")){
+			$job = explode("/:/", $lookingfor->job);
+			if (count($job) == 0){
+				$job_string = $job;
+			}else{
+				$job_string = "'" . implode("','", explode("/:/", $lookingfor->job)) . "'";
+			}
 		}
 		
 		// religion
-		$religion = explode("/:/", $lookingfor->religion);
-		if (count($religion) == 0){
-			$religion_string = $religion;
-		}else{
-			$religion_string = "'" . implode("','", explode("/:/", $lookingfor->religion)) . "'";
+		$religion_string = "";
+		if (!empty($lookingfor->religion) && property_exists($lookingfor, "religion")){
+			$religion = explode("/:/", $lookingfor->religion);
+			if (count($religion) == 0){
+				$religion_string = $religion;
+			}else{
+				$religion_string = "'" . implode("','", explode("/:/", $lookingfor->religion)) . "'";
+			}
 		}
 		
 		$location = "";
-		if ($lookingfor->location == 'Near me'){
+		if (property_exists($lookingfor, "location") && $lookingfor->location == 'Near me'){
 			$location = $this->business->city_name;
 		}
 		
 		$must_be_single = "";
-		if ($lookingfor->must_be_single == 1){
+		if (property_exists($lookingfor, "must_be_single") && $lookingfor->must_be_single == 1){
 			$must_be_single = "single";
 		}
 		
 		$i_want = "";
-		if ($lookingfor->i_want == "Straight"){
+		if (property_exists($lookingfor, "i_want") && $lookingfor->i_want == "Straight"){
 			$i_want = "straight";
 		}
 		
+		$aliasname = "";
+		if (!empty($lookingfor->aliasname) && property_exists($lookingfor, "aliasname")){
+			$aliasname = $lookingfor->aliasname;
+		}
+		
 		$matching = $this->personality_test_model->getMatching(array(
+			'gender' => $gender,
 			'member_id' => $this->business->member_id,
 			'education' => $education_string,
 			'job' => $job_string,
@@ -103,9 +217,10 @@ class Explore extends MY_Controller {
 			'ages_start' => $lookingfor->ages_start,
 			'ages_end' => $lookingfor->ages_end,
 			'location' => $location,
-			'must_be_single' => $must_be_single
+			'must_be_single' => $must_be_single,
+			'aliasname' => $aliasname
 		));
-		echo $this->db->last_query();
+		//echo $this->db->last_query();
 		
 		return $matching;
 	}
@@ -198,7 +313,11 @@ class Explore extends MY_Controller {
 				'member_id' => $m->member_id,
 				'member_username' => $m->member_username,
 				'member_about' => $m->about1,
-				'member_photo' => $m->album1
+				'member_photo' => $m->album1,
+				'looking_for' => $m->about8,
+				'flagged' => $m->flagged,
+				'dating_rel' => $m->dating_rel,
+				'member_type' => $m->member_type
 			);
 			
 		}
@@ -231,6 +350,25 @@ class Explore extends MY_Controller {
 			$ts = 10;
 		}
 		return $ts;
+	}
+
+	function setDate(){
+		$setdate = $this->input->get_post('setdate');
+		if (!empty($setdate) && $setdate == 1){
+			$member1 = $this->business->member_id;
+			$member2 = $this->input->get_post('member_id');
+			$date = $this->input->get_post('dating-date-hdn');
+			$time = $this->input->get_post('dating-time');
+
+			$this->load->model('dating_model');
+			$datingId = $this->dating_model->setMemberDating($date, $time);
+			$this->dating_model->setMemberDateRel($datingId, $member1, $member2);
+
+			// send to email juga
+
+			$this->session->set_userdata('dating_message', "We will send your date request !");
+		}
+		redirect(base_url() . 'explore/matches');
 	}
 	
 }

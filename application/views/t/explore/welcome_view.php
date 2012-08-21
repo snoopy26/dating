@@ -5,25 +5,18 @@ $this->load->view('t/general/body_view');
 
 <div class="container product-feature feature-cover dating-feature">
 			
-	<div class="row container relative-row row-profile-cover explore-container">
-		<div class="explore-poster">
+	<!--
+	<div class="explore-poster">
 			<div class="explore-dating-btn">Find & Create Dating with Your Mate.</div>
 		</div>
+	-->	
+	<div class="row container relative-row row-profile-cover explore-container">
+		
 	</div>
+	
 	
 	<div class="row row-profile-cover">
 		<div class="span8 ">
-				
-			<ul class="nav nav-tabs" id="tabMenu">
-				<li class="active"><a href="#welcome" data-toggle="tab">Welcome</a></li>
-				<?php 
-				if (!empty($check_order) && $check_order->payment_status == "confirmed"){
-				?>
-				<li><a href="#rekomendasi" data-toggle="tab">Rekomendasi</a></li>
-				<?php
-				}
-				?>
-			</ul>	
 				
 			<div class="tab-content">
 				<div class="tab-pane active" id="welcome">	
@@ -172,49 +165,11 @@ $this->load->view('t/general/body_view');
 					
 				</div>
 				
-				<?php 
-				if ($check_order->payment_status == "confirmed"){
-				?>
-				<div class="tab-pane dating-people-recommend dating-profile" id="rekomendasi">
-					
-					<h2>Rekomendasi untuk anda.</h2>
-					<?php if (!empty($user_personality)){ ?>
-					<ul>
-						<?php 
-							foreach($user_personality as $p){
-								$photo = $this->filemanager->getPath($p['member']['member_photo'], '300x200');
-								$member_username = $p['member']['member_username'];
-								$member_about = $p['member']['member_about'];
-								$total_score = $p['total_score'];
-						?>
-						<li>
-							<div class="span6 user-avatar" style="background-image:url(<?php echo $photo; ?>);">Foto Avatar</div>
-							<div class="span6 user-detail">
-								<h3><a href="<?php echo base_url() . 'profile/index/' . $member_username; ?>"><?php echo $member_username; ?></a></h3>
-								<p class="with-star"><span id="starsin" class="starsin4 stars-wrapper" data-original-title="3.7 stars average - 100 votes">5 Stars Hotel</span></p>
-								<div class="info-section" style="margin-top:10px;">
-									<b>My Self Summary</b>
-									<p class="big-p"><?php echo $member_about; ?></p>
-								</div>
-								<span class="rounded-rating" data-title="Total matching score : <?php echo $total_score; ?> %"><?php echo $total_score; ?></span>
-							</div>
-						</li>
-						<?php
-							}
-						?>
-					</ul>
-					<?php }else{ ?>
-					<p>Tidak ada rekomendasi bagi anda.</p>
-					<?php } ?>
-					
-				</div>
-				
-				<?php } ?>
-				
 			</div>
 			
 		</div>
 		<div class="span3 span3_edit">
+			
 			<div class="title-border">
 				<h3><span>Restaurant Patner</span></h3>
 			</div>
@@ -228,7 +183,30 @@ $this->load->view('t/general/body_view');
 				</div>
 			</div>
 			
-			
+			<?php 
+			if (!empty($tipsHubungan)){ 
+			?>
+			<div class="title-border">
+				<h3><span>Tips Hubungan by <b ><a href="http://hatikupercaya.com" target="_blank" style="color:#CA3181;">HATIKUPERCAYA</a></b></span></h3>
+			</div>
+			<?php
+				foreach($tipsHubungan as $t){
+			?>
+			<div class="detail-border-container">
+				<div class="detail-border">
+					<div class="detail-imagelogo " style="background-image:url('<?php echo $t['image']; ?>');height:70px;"></div>
+					<div class="details">
+						<span><?php echo $t['title']; ?></span>
+						<p><?php echo $t['detail']; ?> <br /><small><a href="#">read more.</a></small></p>
+					</div>
+				</div>
+			</div>
+			<?php
+				}
+			?>
+			<hr />
+			<?php } ?>
+
 		</div>
 	</div>
 	

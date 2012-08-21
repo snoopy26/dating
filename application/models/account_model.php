@@ -74,7 +74,7 @@ class Account_model extends CI_Model{
 		$about6,
 		
 		$about7,
-		//$about8,
+		$about8,
 		$about9,
 		
 		$about10
@@ -91,6 +91,7 @@ class Account_model extends CI_Model{
 		about6 = ?,
 		
 		about7 = ?,
+		about8 = ?,
 		about9 = ?,
 		
 		about10 = ?
@@ -107,6 +108,7 @@ class Account_model extends CI_Model{
 			$about6,
 			
 			$about7,
+			$about8,
 			$about9,
 			
 			$about10
@@ -321,7 +323,9 @@ class Account_model extends CI_Model{
 		f.city_name,
 		g.kecamatan_name,
 		h.kelurahan_name,
-		i.province_name
+		i.province_name,
+
+		j.is_active flagged
 		
 		FROM 
 		member__profile a
@@ -342,12 +346,15 @@ class Account_model extends CI_Model{
 			a.address_kelurahan = h.kelurahan_id
 		INNER JOIN address__province i ON
 			a.address_province = i.province_id	
+
+		LEFT JOIN member__flag j ON
+			j.member_to_id = a.member_id
 			
 		WHERE 1
-		AND a.member_username = ?
+		AND (a.member_username = ? OR a.member_id = ?)
 		LIMIT 1
 		";
-		$results = $this->db->query($sql, array($member_username))->row();
+		$results = $this->db->query($sql, array($member_username, $member_username))->row();
 		return $results;
 	}
 	

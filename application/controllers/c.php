@@ -66,7 +66,7 @@ class C extends MY_Controller{
 				$this->default_param('',array('js/jquery.form.js', 'js/custom/step3.js'));
 				$this->load->view('t/auth/step3_view', $this->data);
 			}else if ($member->step == 3){
-				$this->data['current_menu'] = 'looking for';
+				$this->data['current_menu'] = 'ideal patner';
 				
 				// looking for
 				$this->lookingfor();
@@ -111,7 +111,7 @@ class C extends MY_Controller{
 				$about6 = $this->input->get_post('about6');
 				
 				$about7 = $this->input->get_post('about7');
-				//$about8 = $this->input->get_post('about8');
+				$about8 = $this->input->get_post('about8');
 				$about9 = $this->input->get_post('about9');
 				
 				$about10 = $this->input->get_post('about10');
@@ -141,11 +141,11 @@ class C extends MY_Controller{
 				if (empty($about7)){
 					$errors['about7_error'] = "Anda seharusnya mengisi bagian ini.";
 				}
-				/*
+				
 				if (empty($about8)){
 					$errors['about8_error'] = "Anda seharusnya mengisi bagian ini.";
 				}
-				*/
+				
 				if (empty($about9)){
 					$errors['about9_error'] = "Anda seharusnya mengisi bagian ini.";
 				}
@@ -181,7 +181,7 @@ class C extends MY_Controller{
 						$about6,
 						
 						$about7,
-						//$about8,
+						$about8,
 						$about9,
 						
 						$about10

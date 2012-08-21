@@ -93,5 +93,56 @@ $(function(){
 			}
 		});
 		
+		var more = 3;
+		$('#see_more').bind('click', function(){
+			var el = $(this);
+			var parent = el.parent();
+			if (el.data('working')) return false;
+			el.data('working', true);
+
+			var user1 = el.attr('data-user1');
+			var user2 = el.attr('data-user2');
+
+			$.post('/ajax/getSeeMoreSayHello', {
+				'limit' : more,
+				'user1' : user1,
+				'user2' : user2
+			}, function(response){
+				more += 3;
+				el.data('working', false);
+
+				if (!response.html) el.remove();
+				$(response.html).insertBefore(parent);
+			}, 'json');
+			return false;
+		});
+
+		$('#btn-exp-dating button').tooltip({
+			placement : 'bottom'
+		});
+
+		$('#btn-exp-dating').find('#btn-flagged').on('click', function(){
+			var el = $(this);
+			var closest = el.closest('.btn-group');
+			var memberid = closest.attr('data-memberid');
+			var d = "Are you sure Unflagged ?";
+			var isActive = 0;
+			if (!el.hasClass('active')) {
+				d = "Are you sure flagged ?";
+				isActive = 1;
+			}
+			var c = confirm(d);
+			if (c == true){
+				$.post('/ajax/flagUser', {
+					memberid : memberid,
+					isActive : isActive
+				}, function(response){
+					
+				}, 'json');
+				return;
+			}
+			return false;
+		});
+
 	});
 });

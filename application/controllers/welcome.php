@@ -21,6 +21,23 @@ class Welcome extends CI_Controller {
 	{
 		$this->load->view('welcome_message');
 	}
+
+	function crawlHatikupercaya(){
+		$this->load->library('crawl/crawl_hatikupercaya');
+		$r = $this->crawl_hatikupercaya->tagHubungan();
+		echo '<pre>';
+		print_r($r);
+		echo '</pre>';
+	}
+
+	function cekSimiliar(){
+		$this->load->helper('comparetext');
+		$str1 = "Helo Anton";
+		$str2 = "Helo Antoni";
+		$similiar = compare_text($str1, $str2);
+		echo $similiar;
+	}
+
 }
 
 /* End of file welcome.php */
